@@ -1,0 +1,42 @@
+{
+  "name": "felixarntz/wp-site-identity",
+  "description": "Enables you to manage your site identity data and appearance in one centralized location.",
+  "version": "1.0.0",
+  "license": "GPL-3.0",
+  "type": "wordpress-plugin",
+  "keywords": [
+    "wordpress",
+    "plugin",
+    "site identity",
+    "personal data",
+    "business data",
+    "appearance",
+    "centralized",
+    "customization",
+    "customizer",
+    "widgets",
+    "shortcodes"
+  ],
+  "homepage": "https://github.com/felixarntz/wp-site-identity",
+  "authors": [
+    {
+      "name": "Felix Arntz",
+      "email": "felix-arntz@leaves-and-love.net",
+      "homepage": "https://leaves-and-love.net",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/felixarntz/wp-site-identity/issues"
+  },
+  "config": {
+    "preferred-install": "dist"
+  },
+  "require": {
+    "composer/installers": "~1.0"
+  },
+  "require-dev": {
+    "codeclimate/php-test-reporter": "dev-master",
+    "phpunit/phpunit": "^6"
+  }
+}

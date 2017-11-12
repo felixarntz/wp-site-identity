@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<ruleset name="WP Site Identity PHPCS Rules">
+	<description>A custom set of PHPCS rules for WP Site Identity.</description>
+
+	<exclude-pattern>*/tests/**/*</exclude-pattern>
+
+	<rule ref="WordPress" />
+</ruleset>
