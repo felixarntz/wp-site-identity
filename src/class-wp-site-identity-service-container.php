@@ -61,7 +61,7 @@ final class WP_Site_Identity_Service_Container {
 
 				$this->instances[ $id ] = $reflected_class->newInstanceArgs( $constructor_params );
 			} else {
-				$this->instances[ $id ] = $reflected_class->newInstanceWithoutConstructor();
+				$this->instances[ $id ] = $reflected_class->newInstance();
 			}
 		}
 
