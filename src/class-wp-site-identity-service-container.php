@@ -46,18 +46,23 @@ final class WP_Site_Identity_Service_Container {
 				throw new WP_Site_Identity_Service_Not_Found_Exception( sprintf( __( 'The service with the identifier %s could not be found.', 'wp-site-identity' ), $id ) );
 			}
 
-			$constructor_params = $this->definitions[ $id ]['constructor_params'];
-
-			// Resolve service references.
-			foreach ( $constructor_params as $index => $constructor_param ) {
-				if ( is_a( $constructor_param, 'WP_Site_Identity_Service_Reference' ) ) {
-					$constructor_params[ $index ] = $this->get( $constructor_param->get_id() );
-				}
-			}
-
 			$reflected_class = new ReflectionClass( $this->definitions[ $id ]['class_name'] );
 
-			$this->instances[ $id ] = $reflected_class->newInstanceArgs( $constructor_params );
+			$constructor = $reflected_class->getConstructor();
+			if ( $constructor ) {
+				$constructor_params = $this->definitions[ $id ]['constructor_params'];
+
+				// Resolve service references.
+				foreach ( $constructor_params as $index => $constructor_param ) {
+					if ( is_a( $constructor_param, 'WP_Site_Identity_Service_Reference' ) ) {
+						$constructor_params[ $index ] = $this->get( $constructor_param->get_id() );
+					}
+				}
+
+				$this->instances[ $id ] = $reflected_class->newInstanceArgs( $constructor_params );
+			} else {
+				$this->instances[ $id ] = $reflected_class->newInstanceWithoutConstructor();
+			}
 		}
 
 		return $this->instances[ $id ];
