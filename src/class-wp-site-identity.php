@@ -72,7 +72,8 @@ final class WP_Site_Identity {
 	 * @since 1.0.0
 	 */
 	public function add_hooks() {
-
+		add_action( 'init', array( $this, 'action_register_settings' ), 10, 0 );
+		add_action( 'admin_menu', array( $this, 'action_register_settings_page' ), 10, 0 );
 	}
 
 	/**
@@ -81,6 +82,25 @@ final class WP_Site_Identity {
 	 * @since 1.0.0
 	 */
 	public function remove_hooks() {
+		remove_action( 'init', array( $this, 'action_register_settings' ), 10 );
+		remove_action( 'admin_menu', array( $this, 'action_register_settings_page' ), 10 );
+	}
+
+	/**
+	 * Action to register the plugin's settings.
+	 *
+	 * @since 1.0.0
+	 */
+	public function action_register_settings() {
+		$registry = $this->services->get( 'setting_registry' );
+	}
+
+	/**
+	 * Action to register the plugin's settings page in the admin.
+	 *
+	 * @since 1.0.0
+	 */
+	public function action_register_settings_page() {
 
 	}
 
@@ -90,7 +110,15 @@ final class WP_Site_Identity {
 	 * @since 1.0.0
 	 */
 	private function register_services() {
+
+		// Settings.
 		$this->services->register( 'setting_feedback_handler', 'WP_Site_Identity_Setting_Feedback_Handler' );
-		$this->services->register( 'setting_registry', 'WP_Site_Identity_Setting_Registry', array( new WP_Site_Identity_Service_Reference( 'setting_feedback_handler' ) ) );
+		$this->services->register( 'setting_validator', 'WP_Site_Identity_Setting_Validator' );
+		$this->services->register( 'setting_sanitizer', 'WP_Site_Identity_Setting_Sanitizer' );
+		$this->services->register( 'setting_registry', 'WP_Site_Identity_Setting_Registry', array(
+			new WP_Site_Identity_Service_Reference( 'setting_feedback_handler' ),
+			new WP_Site_Identity_Service_Reference( 'setting_validator' ),
+			new WP_Site_Identity_Service_Reference( 'setting_sanitizer' ),
+		) );
 	}
 }

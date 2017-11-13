@@ -46,6 +46,22 @@ class WP_Site_Identity_Setting_Registry {
 	protected $feedback_handler;
 
 	/**
+	 * Validator to use for registered settings.
+	 *
+	 * @since 1.0.0
+	 * @var WP_Site_Identity_Setting_Validator
+	 */
+	protected $validator;
+
+	/**
+	 * Sanitizer to use for registered settings.
+	 *
+	 * @since 1.0.0
+	 * @var WP_Site_Identity_Setting_Sanitizer
+	 */
+	protected $sanitizer;
+
+	/**
 	 * Constructor.
 	 *
 	 * Sets the feedback handler to use for registered settings.
@@ -54,9 +70,12 @@ class WP_Site_Identity_Setting_Registry {
 	 *
 	 * @param WP_Site_Identity_Setting_Feedback_Handler $feedback_handler Feedback handler to use.
 	 */
-	public function __construct( WP_Site_Identity_Setting_Feedback_Handler $feedback_handler ) {
+	public function __construct( WP_Site_Identity_Setting_Feedback_Handler $feedback_handler, WP_Site_Identity_Setting_Validator $validator, WP_Site_Identity_Setting_Sanitizer $sanitizer ) {
 		$this->feedback_handler = $feedback_handler;
 		$this->feedback_handler->set_prefix( $this->prefix );
+
+		$this->validator = $validator;
+		$this->sanitizer = $sanitizer;
 	}
 
 	/**
@@ -157,7 +176,33 @@ class WP_Site_Identity_Setting_Registry {
 	}
 
 	/**
-	 * Sanitizes a value for a setting in WordPress and adds an error if necessary.
+	 * Gets the validator for the setting registry.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return WP_Site_Identity_Setting_Validator Validator to use for registered settings.
+	 */
+	public function validator() {
+		return $this->validator;
+	}
+
+	/**
+	 * Gets the sanitizer for the setting registry.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return WP_Site_Identity_Setting_Sanitizer Sanitizer to use for registered settings.
+	 */
+	public function sanitizer() {
+		return $this->sanitizer;
+	}
+
+	/**
+	 * Sanitizes a value for a setting in WordPress.
+	 *
+	 * Due to WordPress using the respective hook for validation and sanitization,
+	 * this method validates the value as well before sanitizing it. In case of a
+	 * validation error it adds the error in WordPress to make sure it shows in the UI.
 	 *
 	 * @since 1.0.0
 	 * @internal
@@ -170,14 +215,14 @@ class WP_Site_Identity_Setting_Registry {
 		$setting = $this->get( $name );
 
 		try {
-			$validated_value = $setting->validate( $value );
+			$validated_value = $this->validator->validate( $value, $setting );
 		} catch ( WP_Site_Identity_Setting_Validation_Error_Exception $e ) {
 			$this->feedback_handler->add_error( $setting, $e->getMessage() );
 
 			return $this->get_value_from_wp( $setting );
 		}
 
-		return $setting->sanitize( $validated_value );
+		return $this->sanitizer->sanitize( $validated_value, $setting );
 	}
 
 	/**

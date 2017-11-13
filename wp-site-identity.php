@@ -35,6 +35,8 @@ function wpsi_load() {
 	require_once $classes_dir . 'settings/class-wp-site-identity-setting.php';
 	require_once $classes_dir . 'settings/class-wp-site-identity-setting-registry.php';
 	require_once $classes_dir . 'settings/class-wp-site-identity-setting-feedback-handler.php';
+	require_once $classes_dir . 'settings/class-wp-site-identity-setting-validator.php';
+	require_once $classes_dir . 'settings/class-wp-site-identity-setting-sanitizer.php';
 
 	// Exceptions.
 	require_once $classes_dir . 'exceptions/class-wp-site-identity-service-already-registered-exception.php';
