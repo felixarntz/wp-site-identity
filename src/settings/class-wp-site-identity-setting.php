@@ -146,9 +146,12 @@ class WP_Site_Identity_Setting {
 	 *                                        'boolean', 'array' or 'object'. Default 'string'.
 	 *     @type callable  $validate_callback Validation callback for the setting. In case of a
 	 *                                        validation error, it must return a WP_Error or throw a
-	 *                                        WP_Site_Identity_Setting_Validation_Error_Exception.
-	 *                                        Default null.
-	 *     @type callable  $sanitize_callback Sanitization callback for the setting. Default null.
+	 *                                        WP_Site_Identity_Setting_Validation_Error_Exception. The
+	 *                                        callback is passed the value as first parameter and the
+	 *                                        setting object as second parameter. Default null.
+	 *     @type callable  $sanitize_callback Sanitization callback for the setting. The callback is
+	 *                                        passed the value as first parameter and the setting
+	 *                                        object as second parameter. Default null.
 	 *     @type mixed     $default           Default value for the setting. Default false.
 	 *     @type bool      $show_in_rest      Whether to show the setting in the REST API. Default false.
 	 *     @type array     $rest_schema       Schema to use for the setting in the REST API, if $show_in_rest

@@ -28,7 +28,7 @@ class WP_Site_Identity_Setting_Validator {
 		$validate_callback = $setting->get_validate_callback();
 
 		if ( isset( $validate_callback ) ) {
-			$validated_value = call_user_func( $validate_callback, $value );
+			$validated_value = call_user_func( $validate_callback, $value, $setting );
 
 			if ( is_wp_error( $validated_value ) ) {
 				throw new WP_Site_Identity_Setting_Validation_Error_Exception( $validated_value->get_error_message() );

@@ -28,7 +28,7 @@ class WP_Site_Identity_Setting_Sanitizer {
 		$sanitize_callback = $setting->get_sanitize_callback();
 
 		if ( isset( $sanitize_callback ) ) {
-			$sanitized_value = call_user_func( $sanitize_callback, $value );
+			$sanitized_value = call_user_func( $sanitize_callback, $value, $setting );
 
 			if ( is_wp_error( $sanitized_value ) ) {
 				throw new WP_Site_Identity_Setting_Validation_Error_Exception( $sanitized_value->get_error_message() );
