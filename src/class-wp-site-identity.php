@@ -56,6 +56,41 @@ final class WP_Site_Identity {
 	}
 
 	/**
+	 * Gets the full path for a relative path within the plugin.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $relative_path Relative path to a plugin file or directory.
+	 * @return string Full path.
+	 */
+	public function path( $relative_path ) {
+		return path_join( plugin_dir_path( $this->main_file ), $relative_path );
+	}
+
+	/**
+	 * Gets the full URL for a relative path within the plugin.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $relative_path Relative path to a plugin file or directory.
+	 * @return string Full URL.
+	 */
+	public function url( $relative_path ) {
+		return path_join( plugin_dir_url( $this->main_file ), $relative_path );
+	}
+
+	/**
+	 * Gets the plugin version number.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string Plugin version number.
+	 */
+	public function version() {
+		return $this->version;
+	}
+
+	/**
 	 * Gets the plugin's service container.
 	 *
 	 * @since 1.0.0
