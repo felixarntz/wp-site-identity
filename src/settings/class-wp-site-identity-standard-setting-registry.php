@@ -11,7 +11,7 @@
  *
  * @since 1.0.0
  */
-class WP_Site_Identity_Setting_Registry {
+class WP_Site_Identity_Standard_Setting_Registry implements WP_Site_Identity_Setting_Registry {
 
 	/**
 	 * Group to use for all settings within WordPress.
@@ -36,6 +36,14 @@ class WP_Site_Identity_Setting_Registry {
 	 * @var array
 	 */
 	protected $settings = array();
+
+	/**
+	 * Factory to create setting objects.
+	 *
+	 * @since 1.0.0
+	 * @var WP_Site_Identity_Setting_Factory
+	 */
+	protected $factory;
 
 	/**
 	 * Feedback handler to use for registered settings.
@@ -68,14 +76,32 @@ class WP_Site_Identity_Setting_Registry {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param WP_Site_Identity_Setting_Feedback_Handler $feedback_handler Feedback handler to use.
+	 * @param WP_Site_Identity_Setting_Feedback_Handler $feedback_handler Optional. Feedback handler to use.
+	 * @param WP_Site_Identity_Setting_Validator        $validator        Optional. Validator to use.
+	 * @param WP_Site_Identity_Setting_Sanitizer        $sanitizer        Optional. Sanitizer to use.
 	 */
-	public function __construct( WP_Site_Identity_Setting_Feedback_Handler $feedback_handler, WP_Site_Identity_Setting_Validator $validator, WP_Site_Identity_Setting_Sanitizer $sanitizer ) {
-		$this->feedback_handler = $feedback_handler;
-		$this->feedback_handler->set_prefix( $this->prefix );
+	public function __construct( WP_Site_Identity_Setting_Feedback_Handler $feedback_handler = null, WP_Site_Identity_Setting_Validator $validator = null, WP_Site_Identity_Setting_Sanitizer $sanitizer = null ) {
+		$this->factory = new WP_Site_Identity_Setting_Factory( $this );
 
-		$this->validator = $validator;
-		$this->sanitizer = $sanitizer;
+		if ( $feedback_handler ) {
+			$this->feedback_handler = $feedback_handler;
+		} else {
+			$this->feedback_handler = new WP_Site_Identity_Setting_Feedback_Handler();
+		}
+
+		if ( $validator ) {
+			$this->validator = $validator;
+		} else {
+			$this->validator = new WP_Site_Identity_Setting_Validator();
+		}
+
+		if ( $sanitizer ) {
+			$this->sanitizer = $sanitizer;
+		} else {
+			$this->sanitizer = new WP_Site_Identity_Setting_Sanitizer();
+		}
+
+		$this->feedback_handler->set_prefix( $this->prefix );
 	}
 
 	/**
@@ -107,7 +133,7 @@ class WP_Site_Identity_Setting_Registry {
 	 *
 	 * @throws WP_Site_Identity_Setting_Not_Found_Exception Thrown when a setting cannot be found.
 	 */
-	public function get( $name ) {
+	public function get_setting( $name ) {
 		if ( ! isset( $this->settings[ $name ] ) ) {
 			/* translators: %s: setting name */
 			throw new WP_Site_Identity_Setting_Not_Found_Exception( sprintf( __( 'The setting with the name %s could not be found.', 'wp-site-identity' ), $name ) );
@@ -124,7 +150,7 @@ class WP_Site_Identity_Setting_Registry {
 	 * @param string $name Name of the setting.
 	 * @return bool True if the setting is registered, false otherwise.
 	 */
-	public function has( $name ) {
+	public function has_setting( $name ) {
 		return isset( $this->settings[ $name ] );
 	}
 
@@ -135,7 +161,7 @@ class WP_Site_Identity_Setting_Registry {
 	 *
 	 * @param WP_Site_Identity_Setting $setting Setting to register.
 	 */
-	public function register( WP_Site_Identity_Setting $setting ) {
+	public function register_setting( WP_Site_Identity_Setting $setting ) {
 		$name = $setting->get_name();
 
 		$this->settings[ $name ] = $setting;
@@ -148,12 +174,10 @@ class WP_Site_Identity_Setting_Registry {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string|WP_Site_Identity_Setting $name Setting name or instance.
+	 * @param WP_Site_Identity_Setting $setting Setting to unregister.
 	 */
-	public function unregister( $name ) {
-		if ( is_a( $name, 'WP_Site_Identity_Setting' ) ) {
-			$name = $name->get_name();
-		}
+	public function unregister_setting( WP_Site_Identity_Setting $setting ) {
+		$name = $setting->get_name();
 
 		if ( ! isset( $this->settings[ $name ] ) ) {
 			return;
@@ -162,6 +186,17 @@ class WP_Site_Identity_Setting_Registry {
 		$this->unregister_in_wp( $this->settings[ $name ] );
 
 		unset( $this->settings[ $name ] );
+	}
+
+	/**
+	 * Gets the factory to create setting objects.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return WP_Site_Identity_Setting_Factory Factory to create setting objects.
+	 */
+	public function factory() {
+		return $this->factory;
 	}
 
 	/**
@@ -195,6 +230,20 @@ class WP_Site_Identity_Setting_Registry {
 	 */
 	public function sanitizer() {
 		return $this->sanitizer;
+	}
+
+	/**
+	 * Prefixes a setting name.
+	 *
+	 * If no name is given, the prefix is simply returned.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $name Setting name to prefix.
+	 * @return string Prefixed setting name.
+	 */
+	public function prefix( $name = '' ) {
+		return $this->prefix . $name;
 	}
 
 	/**
@@ -234,7 +283,7 @@ class WP_Site_Identity_Setting_Registry {
 	 * @return mixed Current setting value.
 	 */
 	protected function get_value_from_wp( WP_Site_Identity_Setting $setting ) {
-		$name = $this->prefix . $setting->get_name();
+		$name = $this->prefix( $setting->get_name() );
 
 		return get_option( $name );
 	}
@@ -247,7 +296,7 @@ class WP_Site_Identity_Setting_Registry {
 	 * @param WP_Site_Identity_Setting $setting Setting to register.
 	 */
 	protected function register_in_wp( WP_Site_Identity_Setting $setting ) {
-		$name = $this->prefix . $setting->get_name();
+		$name = $this->prefix( $setting->get_name() );
 
 		$args = array(
 			'type'              => $setting->get_type(),
@@ -276,7 +325,7 @@ class WP_Site_Identity_Setting_Registry {
 	 * @param WP_Site_Identity_Setting $setting Setting to unregister.
 	 */
 	protected function unregister_in_wp( WP_Site_Identity_Setting $setting ) {
-		$name = $this->prefix . $setting->get_name();
+		$name = $this->prefix( $setting->get_name() );
 
 		remove_filter( "sanitize_option_{$name}", array( $this, 'sanitize_value_in_wp' ), 10 );
 

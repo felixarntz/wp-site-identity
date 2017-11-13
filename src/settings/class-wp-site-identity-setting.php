@@ -130,14 +130,22 @@ class WP_Site_Identity_Setting {
 	protected $max = false;
 
 	/**
+	 * Parent registry for the setting.
+	 *
+	 * @since 1.0.0
+	 * @var WP_Site_Identity_Setting_Registry
+	 */
+	protected $registry;
+
+	/**
 	 * Constructor.
 	 *
 	 * Sets the setting properties.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $name Setting name.
-	 * @param array  $args {
+	 * @param string                            $name      Setting name.
+	 * @param array                             $args      {
 	 *     Optional. Arguments for the setting.
 	 *
 	 *     @type string    $title             Title for the setting. Default empty string.
@@ -169,17 +177,82 @@ class WP_Site_Identity_Setting {
 	 *                                        considered if $type is 'integer' or 'number'. Used in default
 	 *                                        validation and the REST API schema, if applicable. Default false.
 	 * }
+	 * @param WP_Site_Identity_Setting_Registry $registry Optional. Parent registry for the setting.
 	 */
-	public function __construct( $name, array $args ) {
+	public function __construct( $name, array $args = array(), WP_Site_Identity_Setting_Registry $registry = null ) {
 		$this->name = $name;
 
 		$arg_keys = array( 'title', 'description', 'type', 'validate_callback', 'sanitize_callback', 'default', 'show_in_rest', 'rest_schema', 'choices', 'format', 'min', 'max' );
 
 		foreach ( $arg_keys as $arg_key ) {
-			if ( ! empty( $args[ $arg_key ] ) ) {
+			if ( isset( $args[ $arg_key ] ) ) {
 				$this->$arg_key = $args[ $arg_key ];
 			}
 		}
+
+		if ( ! isset( $args['default'] ) ) {
+			switch ( $this->type ) {
+				case 'object':
+				case 'array':
+					$this->default = array();
+					break;
+				case 'boolean':
+					$this->default = false;
+					break;
+				case 'number':
+					if ( is_float( $this->min ) || is_int( $this->min ) ) {
+						$this->default = (float) $this->min;
+					} else {
+						$this->default = 0.0;
+					}
+					break;
+				case 'integer':
+					if ( is_float( $this->min ) || is_int( $this->min ) ) {
+						$this->default = (int) $this->min;
+					} else {
+						$this->default = 0;
+					}
+					break;
+				case 'string':
+					$this->default;
+					break;
+			}
+		}
+
+		if ( $registry ) {
+			$this->registry = $registry;
+		} else {
+			$this->registry = new WP_Site_Identity_Setting_Registry();
+		}
+	}
+
+	/**
+	 * Checks whether the setting is registered.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return bool True if the setting is registered, false otherwise.
+	 */
+	public function is_registered() {
+		return $this->registry->has_setting( $this->name );
+	}
+
+	/**
+	 * Registers the setting.
+	 *
+	 * @since 1.0.0
+	 */
+	public function register() {
+		$this->registry->register_setting( $this );
+	}
+
+	/**
+	 * Unregisters the setting.
+	 *
+	 * @since 1.0.0
+	 */
+	public function unregister() {
+		$this->registry->unregister_setting( $this );
 	}
 
 	/**

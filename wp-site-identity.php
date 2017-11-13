@@ -32,8 +32,11 @@ function wpsi_load() {
 	require_once $classes_dir . 'class-wp-site-identity-service-reference.php';
 
 	// Settings.
+	require_once $classes_dir . 'settings/interface-wp-site-identity-setting-registry.php';
+	require_once $classes_dir . 'settings/class-wp-site-identity-standard-setting-registry.php';
 	require_once $classes_dir . 'settings/class-wp-site-identity-setting.php';
-	require_once $classes_dir . 'settings/class-wp-site-identity-setting-registry.php';
+	require_once $classes_dir . 'settings/class-wp-site-identity-aggregate-setting.php';
+	require_once $classes_dir . 'settings/class-wp-site-identity-setting-factory.php';
 	require_once $classes_dir . 'settings/class-wp-site-identity-setting-feedback-handler.php';
 	require_once $classes_dir . 'settings/class-wp-site-identity-setting-validator.php';
 	require_once $classes_dir . 'settings/class-wp-site-identity-setting-sanitizer.php';

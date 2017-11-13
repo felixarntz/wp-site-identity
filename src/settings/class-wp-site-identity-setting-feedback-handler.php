@@ -32,7 +32,7 @@ class WP_Site_Identity_Setting_Feedback_Handler {
 	public function add_success( WP_Site_Identity_Setting $setting, $message ) {
 		$name = $this->prefix . $setting->get_name();
 
-		add_settings_error( $name, "invalid_{$name}", $message, 'updated' );
+		add_settings_error( $name, "valid_{$name}", $message, 'updated' );
 	}
 
 	/**

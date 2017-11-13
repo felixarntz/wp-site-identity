@@ -127,7 +127,25 @@ final class WP_Site_Identity {
 	 * @since 1.0.0
 	 */
 	public function action_register_settings() {
-		$registry = $this->services->get( 'setting_registry' );
+		$factory = $this->services->get( 'setting_registry' )->factory();
+
+		$owner_data = $factory->create_aggregate_setting( 'owner_data', array(
+			'title'        => __( 'Owner Data', 'wp-site-identity' ),
+			'description'  => __( 'Data about the owner of the website.', 'wp-site-identity' ),
+			'show_in_rest' => true,
+		) );
+
+		// TODO: Register owner data sub settings.
+		$owner_data->register();
+
+		$appearance = $factory->create_aggregate_setting( 'appearance', array(
+			'title'        => __( 'Appearance', 'wp-site-identity' ),
+			'description'  => __( 'Apperance information representing the brand.', 'wp-site-identity' ),
+			'show_in_rest' => true,
+		) );
+
+		// TODO: Register appearance sub settings.
+		$appearance->register();
 	}
 
 	/**
@@ -150,7 +168,7 @@ final class WP_Site_Identity {
 		$this->services->register( 'setting_feedback_handler', 'WP_Site_Identity_Setting_Feedback_Handler' );
 		$this->services->register( 'setting_validator', 'WP_Site_Identity_Setting_Validator' );
 		$this->services->register( 'setting_sanitizer', 'WP_Site_Identity_Setting_Sanitizer' );
-		$this->services->register( 'setting_registry', 'WP_Site_Identity_Setting_Registry', array(
+		$this->services->register( 'setting_registry', 'WP_Site_Identity_Standard_Setting_Registry', array(
 			new WP_Site_Identity_Service_Reference( 'setting_feedback_handler' ),
 			new WP_Site_Identity_Service_Reference( 'setting_validator' ),
 			new WP_Site_Identity_Service_Reference( 'setting_sanitizer' ),
