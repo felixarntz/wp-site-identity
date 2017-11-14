@@ -1,6 +1,6 @@
 <?php
 /**
- * WP_Site_Identity_Admin_Page_Registry class
+ * WP_Site_Identity_Standard_Admin_Page_Registry class
  *
  * @package WPSiteIdentity
  * @since 1.0.0
