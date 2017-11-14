@@ -38,6 +38,8 @@ function wpsi_load() {
 	require_once $classes_dir . 'exceptions/class-wp-site-identity-setting-not-found-exception.php';
 	require_once $classes_dir . 'exceptions/class-wp-site-identity-setting-validation-error-exception.php';
 	require_once $classes_dir . 'exceptions/class-wp-site-identity-settings-form-not-found-exception.php';
+	require_once $classes_dir . 'exceptions/class-wp-site-identity-settings-section-not-found-exception.php';
+	require_once $classes_dir . 'exceptions/class-wp-site-identity-settings-field-not-found-exception.php';
 
 	// Settings.
 	require_once $classes_dir . 'settings/interface-wp-site-identity-setting-registry.php';
@@ -62,6 +64,8 @@ function wpsi_load() {
 	require_once $classes_dir . 'admin-pages/settings-forms/class-wp-site-identity-standard-settings-form-registry.php';
 	require_once $classes_dir . 'admin-pages/settings-forms/class-wp-site-identity-settings-form.php';
 	require_once $classes_dir . 'admin-pages/settings-forms/class-wp-site-identity-settings-form-factory.php';
+	require_once $classes_dir . 'admin-pages/settings-forms/class-wp-site-identity-settings-section.php';
+	require_once $classes_dir . 'admin-pages/settings-forms/class-wp-site-identity-settings-field.php';
 }
 
 /**
@@ -123,6 +127,43 @@ function wpsi_requirements_notice() {
 		</p>
 	</div>
 	<?php
+}
+
+/**
+ * Filters content allowing very basic inline HTML tags and attributes only.
+ *
+ * @since 1.0.0
+ *
+ * @param string $output Content to filter.
+ * @return Filtered content with only allowed HTML elements.
+ */
+function wpsi_kses_basic( $output ) {
+	$allowed_html = array(
+		'span'   => array(
+			'id'    => array(),
+			'class' => array(),
+		),
+		'strong' => array(
+			'id'    => array(),
+			'class' => array(),
+		),
+		'em'     => array(
+			'id'    => array(),
+			'class' => array(),
+		),
+		'br'     => array(
+			'id'    => array(),
+			'class' => array(),
+		),
+		'a'      => array(
+			'id'     => array(),
+			'class'  => array(),
+			'href'   => array(),
+			'target' => array(),
+		),
+	);
+
+	return wp_kses( $output, $allowed_html );
 }
 
 if ( version_compare( $GLOBALS['wp_version'], '4.7', '<' ) ) {

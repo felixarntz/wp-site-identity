@@ -397,4 +397,14 @@ class WP_Site_Identity_Setting {
 	public function get_max() {
 		return $this->max;
 	}
+
+	/**
+	 * Gets the parent registry for the setting.
+	 *
+	 * @since 1.0.0
+	 * @return WP_Site_Identity_Setting_Registry Parent registry.
+	 */
+	public function get_registry() {
+		return $this->registry;
+	}
 }
