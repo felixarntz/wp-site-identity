@@ -31,6 +31,13 @@ function wpsi_load() {
 	require_once $classes_dir . 'class-wp-site-identity-service-container.php';
 	require_once $classes_dir . 'class-wp-site-identity-service-reference.php';
 
+	// Exceptions.
+	require_once $classes_dir . 'exceptions/class-wp-site-identity-admin-page-not-found-exception.php';
+	require_once $classes_dir . 'exceptions/class-wp-site-identity-service-already-registered-exception.php';
+	require_once $classes_dir . 'exceptions/class-wp-site-identity-service-not-found-exception.php';
+	require_once $classes_dir . 'exceptions/class-wp-site-identity-setting-not-found-exception.php';
+	require_once $classes_dir . 'exceptions/class-wp-site-identity-setting-validation-error-exception.php';
+
 	// Settings.
 	require_once $classes_dir . 'settings/interface-wp-site-identity-setting-registry.php';
 	require_once $classes_dir . 'settings/class-wp-site-identity-standard-setting-registry.php';
@@ -41,11 +48,13 @@ function wpsi_load() {
 	require_once $classes_dir . 'settings/class-wp-site-identity-setting-validator.php';
 	require_once $classes_dir . 'settings/class-wp-site-identity-setting-sanitizer.php';
 
-	// Exceptions.
-	require_once $classes_dir . 'exceptions/class-wp-site-identity-service-already-registered-exception.php';
-	require_once $classes_dir . 'exceptions/class-wp-site-identity-service-not-found-exception.php';
-	require_once $classes_dir . 'exceptions/class-wp-site-identity-setting-not-found-exception.php';
-	require_once $classes_dir . 'exceptions/class-wp-site-identity-setting-validation-error-exception.php';
+	// Admin pages.
+	require_once $classes_dir . 'admin-pages/interface-wp-site-identity-admin-page-registry.php';
+	require_once $classes_dir . 'admin-pages/class-wp-site-identity-standard-admin-page-registry.php';
+	require_once $classes_dir . 'admin-pages/class-wp-site-identity-admin-page.php';
+	require_once $classes_dir . 'admin-pages/class-wp-site-identity-admin-menu-page.php';
+	require_once $classes_dir . 'admin-pages/class-wp-site-identity-admin-submenu-page.php';
+	require_once $classes_dir . 'admin-pages/class-wp-site-identity-admin-page-factory.php';
 }
 
 /**
