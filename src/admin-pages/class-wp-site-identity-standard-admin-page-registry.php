@@ -61,6 +61,17 @@ class WP_Site_Identity_Standard_Admin_Page_Registry implements WP_Site_Identity_
 	}
 
 	/**
+	 * Gets all registered admin pages.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array Array of `$slug => $instance` pairs.
+	 */
+	public function get_all_admin_pages() {
+		return $this->admin_pages;
+	}
+
+	/**
 	 * Gets a registered admin page instance.
 	 *
 	 * @since 1.0.0

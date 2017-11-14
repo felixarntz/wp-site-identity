@@ -133,7 +133,7 @@ class WP_Site_Identity_Standard_Setting_Registry implements WP_Site_Identity_Set
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return array Array of `$slug => $instance` pairs.
+	 * @return array Array of `$name => $instance` pairs.
 	 */
 	public function get_all_settings() {
 		return $this->settings;

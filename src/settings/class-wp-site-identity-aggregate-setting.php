@@ -94,7 +94,7 @@ class WP_Site_Identity_Aggregate_Setting extends WP_Site_Identity_Setting implem
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return array Array of `$slug => $instance` pairs.
+	 * @return array Array of `$name => $instance` pairs.
 	 */
 	public function get_all_settings() {
 		return $this->settings;

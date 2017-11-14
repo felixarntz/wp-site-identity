@@ -14,6 +14,15 @@
 interface WP_Site_Identity_Admin_Page_Registry {
 
 	/**
+	 * Gets all registered admin pages.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array Array of `$slug => $instance` pairs.
+	 */
+	public function get_all_admin_pages();
+
+	/**
 	 * Gets a registered admin page instance.
 	 *
 	 * @since 1.0.0
