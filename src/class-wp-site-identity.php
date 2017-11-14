@@ -154,7 +154,42 @@ final class WP_Site_Identity {
 	 * @since 1.0.0
 	 */
 	public function action_register_settings_page() {
+		$factory = $this->services->get( 'admin_page_registry' )->factory();
 
+		$factory->create_admin_submenu_page( 'settings', array(
+			'title'            => __( 'Site Identity Settings', 'wp-site-identity' ),
+			'capability'       => 'manage_options',
+			'render_callback'  => array( $this, 'action_render_settings_page' ),
+			'handle_callback'  => array( $this, 'action_handle_settings_page' ),
+			'enqueue_callback' => null,
+			'menu_title'       => __( 'Site Identity', 'wp-site-identity' ),
+			'parent_slug'      => 'options-general.php',
+		) )->register();
+	}
+
+	/**
+	 * Action to handle a request to the plugin's settings page.
+	 *
+	 * @since 1.0.0
+	 */
+	public function action_handle_settings_page() {
+
+		// TODO: Register settings form, sections and fields.
+	}
+
+	/**
+	 * Action to render the plugin's settings page.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_Site_Identity_Admin_Page $admin_page Admin page object.
+	 */
+	public function action_render_settings_page( $admin_page ) {
+		?>
+		<div class="wrap">
+			<h1><?php echo esc_html( $admin_page->get_title() ); ?></h1>
+		</div>
+		<?php
 	}
 
 	/**
@@ -174,6 +209,11 @@ final class WP_Site_Identity {
 			new WP_Site_Identity_Service_Reference( 'setting_feedback_handler' ),
 			new WP_Site_Identity_Service_Reference( 'setting_validator' ),
 			new WP_Site_Identity_Service_Reference( 'setting_sanitizer' ),
+		) );
+
+		// Admin pages.
+		$this->services->register( 'admin_page_registry', 'WP_Site_Identity_Standard_Admin_Page_Registry', array(
+			'wpsi_',
 		) );
 	}
 }
