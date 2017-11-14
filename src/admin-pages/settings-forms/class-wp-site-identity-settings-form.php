@@ -1,13 +1,13 @@
 <?php
 /**
- * WP_Site_Identity_Settings_Form_Registry class
+ * WP_Site_Identity_Settings_Form class
  *
  * @package WPSiteIdentity
  * @since 1.0.0
  */
 
 /**
- * Class responsible for registering settings forms.
+ * Class representing a settings form.
  *
  * @since 1.0.0
  */
