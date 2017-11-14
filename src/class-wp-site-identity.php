@@ -173,8 +173,24 @@ final class WP_Site_Identity {
 	 * @since 1.0.0
 	 */
 	public function action_handle_settings_page() {
+		$setting_registry = $this->services->get( 'setting_registry' );
 
-		// TODO: Register settings form, sections and fields.
+		$owner_data = $setting_registry->get_setting( 'owner_data' );
+		$appearance = $setting_registry->get_setting( 'appearance' );
+
+		$factory = $this->services->get( 'settings_form_registry' )->factory();
+
+		$owner_data_form = $factory->create_form( 'owner_data', $owner_data );
+		$owner_data_form->set_defaults();
+
+		// TODO: Add owner data settings sections and fields.
+		$owner_data_form->register();
+
+		$appearance_form = $factory->create_form( 'appearance', $appearance );
+		$appearance_form->set_defaults();
+
+		// TODO: Add appearance settings sections and fields.
+		$appearance_form->register();
 	}
 
 	/**
@@ -185,9 +201,45 @@ final class WP_Site_Identity {
 	 * @param WP_Site_Identity_Admin_Page $admin_page Admin page object.
 	 */
 	public function action_render_settings_page( $admin_page ) {
+		if ( ! is_a( $admin_page, 'WP_Site_Identity_Admin_Submenu_Page' ) || 'options-general.php' !== $admin_page->get_parent_slug() ) {
+			require ABSPATH . 'wp-admin/options-head.php';
+		}
+
+		$settings_forms = $this->services->get( 'settings_form_registry' )->get_all_forms();
+
+		$current_slug = null;
+
+		if ( ! empty( $settings_forms ) ) {
+			// @codingStandardsIgnoreStart
+			if ( isset( $_GET['tab'] ) && isset( $settings_forms[ $_GET['tab'] ] ) ) {
+				$current_slug = $_GET['tab'];
+			} else {
+				$current_slug = key( $settings_forms );
+			}
+			// @codingStandardsIgnoreEnd
+		}
+
 		?>
 		<div class="wrap">
 			<h1><?php echo esc_html( $admin_page->get_title() ); ?></h1>
+
+			<?php if ( ! empty( $settings_forms ) ) : ?>
+				<?php if ( count( $settings_forms ) > 1 ) : ?>
+					<h2 class="nav-tab-wrapper" style="margin-bottom:1em;">
+						<?php foreach ( $settings_forms as $slug => $settings_form ) : ?>
+							<a class="<?php echo esc_attr( $slug === $current_slug ? 'nav-tab nav-tab-active' : 'nav-tab' ); ?>" href="<?php echo esc_url( add_query_arg( 'tab', $slug, $admin_page->get_url() ) ); ?>">
+								<?php echo esc_html( $settings_form->get_setting_registry()->get_title() ); ?>
+							</a>
+						<?php endforeach; ?>
+					</h2>
+				<?php else : ?>
+					<h2 class="screen-reader-text">
+						<?php echo esc_html( $settings_forms[ $current_slug ]->get_setting_registry()->get_title() ); ?>
+					</h2>
+				<?php endif; ?>
+
+				<?php $settings_forms[ $current_slug ]->render(); ?>
+			<?php endif; ?>
 		</div>
 		<?php
 	}
@@ -215,5 +267,8 @@ final class WP_Site_Identity {
 		$this->services->register( 'admin_page_registry', 'WP_Site_Identity_Standard_Admin_Page_Registry', array(
 			'wpsi_',
 		) );
+
+		// Settings forms.
+		$this->services->register( 'settings_form_registry', 'WP_Site_Identity_Standard_Settings_Form_Registry' );
 	}
 }
