@@ -222,7 +222,7 @@ class WP_Site_Identity_Setting {
 		if ( $registry ) {
 			$this->registry = $registry;
 		} else {
-			$this->registry = new WP_Site_Identity_Setting_Registry();
+			$this->registry = new WP_Site_Identity_Standard_Setting_Registry();
 		}
 	}
 
