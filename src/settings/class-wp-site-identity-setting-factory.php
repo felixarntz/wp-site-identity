@@ -14,7 +14,7 @@
 class WP_Site_Identity_Setting_Factory {
 
 	/**
-	 * Registry to use for instantiating aggregate settings.
+	 * Registry to use for instantiating settings.
 	 *
 	 * @since 1.0.0
 	 * @var WP_Site_Identity_Setting_Registry
@@ -23,8 +23,6 @@ class WP_Site_Identity_Setting_Factory {
 
 	/**
 	 * Constructor.
-	 *
-	 * Sets the setting properties.
 	 *
 	 * @since 1.0.0
 	 *

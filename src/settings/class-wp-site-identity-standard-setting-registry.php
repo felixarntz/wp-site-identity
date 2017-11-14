@@ -72,7 +72,7 @@ class WP_Site_Identity_Standard_Setting_Registry implements WP_Site_Identity_Set
 	/**
 	 * Constructor.
 	 *
-	 * Sets the feedback handler to use for registered settings.
+	 * Sets the prefix and group to use for registered settings, plus dependencies.
 	 *
 	 * @since 1.0.0
 	 *
