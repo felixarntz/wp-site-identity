@@ -90,6 +90,17 @@ class WP_Site_Identity_Aggregate_Setting extends WP_Site_Identity_Setting implem
 	}
 
 	/**
+	 * Gets all registered sub settings.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array Array of `$slug => $instance` pairs.
+	 */
+	public function get_all_settings() {
+		return $this->settings;
+	}
+
+	/**
 	 * Gets a registered sub setting instance.
 	 *
 	 * @since 1.0.0
@@ -205,7 +216,7 @@ class WP_Site_Identity_Aggregate_Setting extends WP_Site_Identity_Setting implem
 	/**
 	 * Prefixes a setting name.
 	 *
-	 * If no name is given, the prefix is simply returned.
+	 * Sub settings don't need to be prefixed, so this method just passes through the name.
 	 *
 	 * @since 1.0.0
 	 *
@@ -213,7 +224,18 @@ class WP_Site_Identity_Aggregate_Setting extends WP_Site_Identity_Setting implem
 	 * @return string Prefixed setting name.
 	 */
 	public function prefix( $name = '' ) {
-		return $this->registry->prefix( $name );
+		return $name;
+	}
+
+	/**
+	 * Gets the group to use for registered sub settings.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string Group identifier.
+	 */
+	public function group() {
+		return $this->registry->group() . '_' . $this->name;
 	}
 
 	/**

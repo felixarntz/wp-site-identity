@@ -129,6 +129,17 @@ class WP_Site_Identity_Standard_Setting_Registry implements WP_Site_Identity_Set
 	}
 
 	/**
+	 * Gets all registered settings.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array Array of `$slug => $instance` pairs.
+	 */
+	public function get_all_settings() {
+		return $this->settings;
+	}
+
+	/**
 	 * Gets a registered setting instance.
 	 *
 	 * @since 1.0.0
@@ -249,6 +260,19 @@ class WP_Site_Identity_Standard_Setting_Registry implements WP_Site_Identity_Set
 	 */
 	public function prefix( $name = '' ) {
 		return $this->prefix . $name;
+	}
+
+	/**
+	 * Gets the group to use for registered settings.
+	 *
+	 * Aggregate settings use an individual group and are unaffected by this.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string Group identifier.
+	 */
+	public function group() {
+		return $this->group;
 	}
 
 	/**

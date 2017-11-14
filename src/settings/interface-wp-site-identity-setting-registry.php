@@ -26,6 +26,15 @@ interface WP_Site_Identity_Setting_Registry {
 	public function get_value( $name );
 
 	/**
+	 * Gets all registered settings.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array Array of `$slug => $instance` pairs.
+	 */
+	public function get_all_settings();
+
+	/**
 	 * Gets a registered setting instance.
 	 *
 	 * @since 1.0.0
@@ -112,4 +121,13 @@ interface WP_Site_Identity_Setting_Registry {
 	 * @return string Prefixed setting name.
 	 */
 	public function prefix( $name = '' );
+
+	/**
+	 * Gets the group to use for registered settings.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string Group identifier.
+	 */
+	public function group();
 }
