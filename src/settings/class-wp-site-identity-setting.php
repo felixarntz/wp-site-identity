@@ -214,7 +214,7 @@ class WP_Site_Identity_Setting {
 					}
 					break;
 				case 'string':
-					$this->default;
+					$this->default = '';
 					break;
 			}
 		}
