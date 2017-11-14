@@ -14,20 +14,20 @@
 class WP_Site_Identity_Standard_Setting_Registry implements WP_Site_Identity_Setting_Registry {
 
 	/**
-	 * Group to use for all settings within WordPress.
-	 *
-	 * @since 1.0.0
-	 * @var string
-	 */
-	const GROUP = 'wp_site_identity';
-
-	/**
 	 * Prefix to use for all setting names within WordPress.
 	 *
 	 * @since 1.0.0
 	 * @var string
 	 */
-	protected $prefix = 'wpsi_';
+	protected $prefix = '';
+
+	/**
+	 * Group to use for all settings within WordPress.
+	 *
+	 * @since 1.0.0
+	 * @var string
+	 */
+	protected $group = '';
 
 	/**
 	 * All registered settings as `$name => $instance` pairs.
@@ -76,11 +76,16 @@ class WP_Site_Identity_Standard_Setting_Registry implements WP_Site_Identity_Set
 	 *
 	 * @since 1.0.0
 	 *
+	 * @param string                                    $prefix           Prefix to use for all setting names within WordPress.
+	 * @param string                                    $group            Group to use for all settings within WordPress.
 	 * @param WP_Site_Identity_Setting_Feedback_Handler $feedback_handler Optional. Feedback handler to use.
 	 * @param WP_Site_Identity_Setting_Validator        $validator        Optional. Validator to use.
 	 * @param WP_Site_Identity_Setting_Sanitizer        $sanitizer        Optional. Sanitizer to use.
 	 */
-	public function __construct( WP_Site_Identity_Setting_Feedback_Handler $feedback_handler = null, WP_Site_Identity_Setting_Validator $validator = null, WP_Site_Identity_Setting_Sanitizer $sanitizer = null ) {
+	public function __construct( $prefix, $group, WP_Site_Identity_Setting_Feedback_Handler $feedback_handler = null, WP_Site_Identity_Setting_Validator $validator = null, WP_Site_Identity_Setting_Sanitizer $sanitizer = null ) {
+		$this->prefix = $prefix;
+		$this->group  = $group;
+
 		$this->factory = new WP_Site_Identity_Setting_Factory( $this );
 
 		if ( $feedback_handler ) {
@@ -300,7 +305,7 @@ class WP_Site_Identity_Standard_Setting_Registry implements WP_Site_Identity_Set
 
 		$args = array(
 			'type'              => $setting->get_type(),
-			'group'             => self::GROUP,
+			'group'             => $this->group,
 			'description'       => $setting->get_description(),
 			'sanitize_callback' => null,
 			'show_in_rest'      => false,
@@ -312,7 +317,7 @@ class WP_Site_Identity_Standard_Setting_Registry implements WP_Site_Identity_Set
 			);
 		}
 
-		register_setting( self::GROUP, $name, $args );
+		register_setting( $this->group, $name, $args );
 
 		add_filter( "sanitize_option_{$name}", array( $this, 'sanitize_value_in_wp' ), 10, 2 );
 	}
@@ -329,7 +334,7 @@ class WP_Site_Identity_Standard_Setting_Registry implements WP_Site_Identity_Set
 
 		remove_filter( "sanitize_option_{$name}", array( $this, 'sanitize_value_in_wp' ), 10 );
 
-		unregister_setting( self::GROUP, $name );
+		unregister_setting( $this->group, $name );
 	}
 
 	/**

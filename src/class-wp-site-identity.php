@@ -169,6 +169,8 @@ final class WP_Site_Identity {
 		$this->services->register( 'setting_validator', 'WP_Site_Identity_Setting_Validator' );
 		$this->services->register( 'setting_sanitizer', 'WP_Site_Identity_Setting_Sanitizer' );
 		$this->services->register( 'setting_registry', 'WP_Site_Identity_Standard_Setting_Registry', array(
+			'wpsi_',
+			'wp_site_identity',
 			new WP_Site_Identity_Service_Reference( 'setting_feedback_handler' ),
 			new WP_Site_Identity_Service_Reference( 'setting_validator' ),
 			new WP_Site_Identity_Service_Reference( 'setting_sanitizer' ),
