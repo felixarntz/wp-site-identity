@@ -139,43 +139,6 @@ function wpsi_requirements_notice() {
 	<?php
 }
 
-/**
- * Filters content allowing very basic inline HTML tags and attributes only.
- *
- * @since 1.0.0
- *
- * @param string $output Content to filter.
- * @return Filtered content with only allowed HTML elements.
- */
-function wpsi_kses_basic( $output ) {
-	$allowed_html = array(
-		'span'   => array(
-			'id'    => array(),
-			'class' => array(),
-		),
-		'strong' => array(
-			'id'    => array(),
-			'class' => array(),
-		),
-		'em'     => array(
-			'id'    => array(),
-			'class' => array(),
-		),
-		'br'     => array(
-			'id'    => array(),
-			'class' => array(),
-		),
-		'a'      => array(
-			'id'     => array(),
-			'class'  => array(),
-			'href'   => array(),
-			'target' => array(),
-		),
-	);
-
-	return wp_kses( $output, $allowed_html );
-}
-
 if ( version_compare( $GLOBALS['wp_version'], '4.7', '<' ) ) {
 	add_action( 'admin_notices', 'wpsi_requirements_notice' );
 } else {

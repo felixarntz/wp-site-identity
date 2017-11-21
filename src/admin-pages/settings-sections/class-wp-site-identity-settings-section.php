@@ -123,7 +123,7 @@ class WP_Site_Identity_Settings_Section {
 	 */
 	public function render() {
 		if ( ! empty( $this->description ) ) {
-			echo '<p class="description">' . wpsi_kses_basic( $this->description ) . '</p>'; // WPCS: XSS OK.
+			echo '<p class="description">' . wp_kses_data( $this->description ) . '</p>';
 		}
 
 		if ( ! $this->render_callback ) {
