@@ -190,35 +190,6 @@ class WP_Site_Identity_Setting {
 			}
 		}
 
-		if ( ! isset( $args['default'] ) ) {
-			switch ( $this->type ) {
-				case 'object':
-				case 'array':
-					$this->default = array();
-					break;
-				case 'boolean':
-					$this->default = false;
-					break;
-				case 'number':
-					if ( is_float( $this->min ) || is_int( $this->min ) ) {
-						$this->default = (float) $this->min;
-					} else {
-						$this->default = 0.0;
-					}
-					break;
-				case 'integer':
-					if ( is_float( $this->min ) || is_int( $this->min ) ) {
-						$this->default = (int) $this->min;
-					} else {
-						$this->default = 0;
-					}
-					break;
-				case 'string':
-					$this->default = '';
-					break;
-			}
-		}
-
 		if ( $registry ) {
 			$this->registry = $registry;
 		} else {
