@@ -94,15 +94,22 @@ class WP_Site_Identity_Settings_Field {
 	protected $render_for_attr = true;
 
 	/**
+	 * Parent registry for the settings field.
+	 *
+	 * @since 1.0.0
+	 * @var WP_Site_Identity_Settings_Field_Registry
+	 */
+	protected $registry;
+
+	/**
 	 * Constructor.
 	 *
 	 * Sets the settings field properties.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string                   $slug    Settings section slug.
-	 * @param WP_Site_Identity_Setting $setting Setting the settings field is for.
-	 * @param array                    $args    {
+	 * @param WP_Site_Identity_Setting                 $setting  Setting the settings field is for.
+	 * @param array                                    $args     {
 	 *     Optional. Arguments for the settings field.
 	 *
 	 *     @type string   $title            Title for the settings field. Default empty string.
@@ -115,9 +122,10 @@ class WP_Site_Identity_Settings_Field {
 	 *     @type bool     $render_for_attr  Whether WordPress should render the 'for' attribute on the label.
 	 *                                      Default true.
 	 * }
+	 * @param WP_Site_Identity_Settings_Field_Registry $registry Optional. Parent registry for the settings section.
 	 */
-	public function __construct( $slug, WP_Site_Identity_Setting $setting, array $args = array() ) {
-		$this->slug    = $slug;
+	public function __construct( WP_Site_Identity_Setting $setting, array $args = array(), WP_Site_Identity_Settings_Field_Registry $registry = null ) {
+		$this->slug    = $setting->get_name();
 		$this->setting = $setting;
 
 		if ( ! empty( $args['title'] ) ) {
@@ -156,7 +164,33 @@ class WP_Site_Identity_Settings_Field {
 			// TODO: Set default value through helper class.
 		}
 
+		if ( $registry ) {
+			$this->registry = $registry;
+		} else {
+			$this->registry = new WP_Site_Identity_Standard_Settings_Field_Registry();
+		}
+
 		$this->set_default_attrs();
+	}
+
+	/**
+	 * Checks whether the settings field is registered.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return bool True if the settings field is registered, false otherwise.
+	 */
+	public function is_registered() {
+		return $this->registry->has_field( $this->name );
+	}
+
+	/**
+	 * Registers the settings field.
+	 *
+	 * @since 1.0.0
+	 */
+	public function register() {
+		$this->registry->register_field( $this );
 	}
 
 	/**
@@ -355,10 +389,10 @@ class WP_Site_Identity_Settings_Field {
 
 		if ( is_a( $registry, 'WP_Site_Identity_Aggregate_Setting' ) ) {
 			$this->id_attr   = str_replace( '_', '-', $registry->get_name() . '-' . $this->slug );
-			$this->name_attr = $registry->get_name() . '[' . $this->setting->get_name() . ']';
+			$this->name_attr = $registry->prefix( $registry->get_name() ) . '[' . $this->slug . ']';
 		} else {
 			$this->id_attr   = str_replace( '_', '-', $this->slug );
-			$this->name_attr = $this->setting->get_name();
+			$this->name_attr = $registry->prefix( $this->slug );
 		}
 	}
 }

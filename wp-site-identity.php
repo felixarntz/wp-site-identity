@@ -64,8 +64,18 @@ function wpsi_load() {
 	require_once $classes_dir . 'admin-pages/settings-forms/class-wp-site-identity-standard-settings-form-registry.php';
 	require_once $classes_dir . 'admin-pages/settings-forms/class-wp-site-identity-settings-form.php';
 	require_once $classes_dir . 'admin-pages/settings-forms/class-wp-site-identity-settings-form-factory.php';
-	require_once $classes_dir . 'admin-pages/settings-forms/class-wp-site-identity-settings-section.php';
-	require_once $classes_dir . 'admin-pages/settings-forms/class-wp-site-identity-settings-field.php';
+
+	// Settings sections.
+	require_once $classes_dir . 'admin-pages/settings-sections/interface-wp-site-identity-settings-section-registry.php';
+	require_once $classes_dir . 'admin-pages/settings-sections/class-wp-site-identity-standard-settings-section-registry.php';
+	require_once $classes_dir . 'admin-pages/settings-sections/class-wp-site-identity-settings-section.php';
+	require_once $classes_dir . 'admin-pages/settings-sections/class-wp-site-identity-settings-section-factory.php';
+
+	// Settings fields.
+	require_once $classes_dir . 'admin-pages/settings-fields/interface-wp-site-identity-settings-field-registry.php';
+	require_once $classes_dir . 'admin-pages/settings-fields/class-wp-site-identity-standard-settings-field-registry.php';
+	require_once $classes_dir . 'admin-pages/settings-fields/class-wp-site-identity-settings-field.php';
+	require_once $classes_dir . 'admin-pages/settings-fields/class-wp-site-identity-settings-field-factory.php';
 }
 
 /**

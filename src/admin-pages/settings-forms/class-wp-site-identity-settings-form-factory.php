@@ -41,20 +41,19 @@ class WP_Site_Identity_Settings_Form_Factory {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string                            $name             Settings form name.
 	 * @param WP_Site_Identity_Setting_Registry $setting_registry Setting registry the settings form should display fields for.
 	 * @return WP_Site_Identity_Settings_Form New settings form instance.
 	 */
-	public function create_form( $name, WP_Site_Identity_Setting_Registry $setting_registry ) {
-		return new WP_Site_Identity_Settings_Form( $name, $setting_registry, $this->registry );
+	public function create_form( WP_Site_Identity_Setting_Registry $setting_registry ) {
+		return new WP_Site_Identity_Settings_Form( $setting_registry, $this->registry );
 	}
 
 	/**
-	 * Gets the registry to use for creating new settings.
+	 * Gets the registry to use for creating new settings forms.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return WP_Site_Identity_Settings_Form_Registry Registry for new settings.
+	 * @return WP_Site_Identity_Settings_Form_Registry Registry for new settings forms.
 	 */
 	public function registry() {
 		return $this->registry;

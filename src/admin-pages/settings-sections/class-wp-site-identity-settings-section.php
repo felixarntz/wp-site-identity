@@ -46,14 +46,22 @@ class WP_Site_Identity_Settings_Section {
 	protected $render_callback = null;
 
 	/**
+	 * Parent registry for the settings section.
+	 *
+	 * @since 1.0.0
+	 * @var WP_Site_Identity_Settings_Section_Registry
+	 */
+	protected $registry;
+
+	/**
 	 * Constructor.
 	 *
 	 * Sets the settings section properties.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $slug Settings section slug.
-	 * @param array  $args {
+	 * @param string                                     $slug     Settings section slug.
+	 * @param array                                      $args     {
 	 *     Optional. Arguments for the settings section.
 	 *
 	 *     @type string   $title            Title for the settings section. Default empty string.
@@ -61,8 +69,9 @@ class WP_Site_Identity_Settings_Section {
 	 *     @type callable $render_callback  Render callback for the settings section. Should print the content it
 	 *                                      generates. It is passed the settings section instance. Default null.
 	 * }
+	 * @param WP_Site_Identity_Settings_Section_Registry $registry Optional. Parent registry for the settings section.
 	 */
-	public function __construct( $slug, array $args = array() ) {
+	public function __construct( $slug, array $args = array(), WP_Site_Identity_Settings_Section_Registry $registry = null ) {
 		$this->slug = $slug;
 
 		if ( ! empty( $args['title'] ) ) {
@@ -76,6 +85,32 @@ class WP_Site_Identity_Settings_Section {
 		if ( isset( $args['render_callback'] ) ) {
 			$this->render_callback = $args['render_callback'];
 		}
+
+		if ( $registry ) {
+			$this->registry = $registry;
+		} else {
+			$this->registry = new WP_Site_Identity_Standard_Settings_Section_Registry();
+		}
+	}
+
+	/**
+	 * Checks whether the settings section is registered.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return bool True if the settings section is registered, false otherwise.
+	 */
+	public function is_registered() {
+		return $this->registry->has_section( $this->name );
+	}
+
+	/**
+	 * Registers the settings section.
+	 *
+	 * @since 1.0.0
+	 */
+	public function register() {
+		$this->registry->register_section( $this );
 	}
 
 	/**

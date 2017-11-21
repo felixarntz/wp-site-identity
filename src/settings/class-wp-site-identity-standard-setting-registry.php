@@ -290,7 +290,8 @@ class WP_Site_Identity_Standard_Setting_Registry implements WP_Site_Identity_Set
 	 * @return mixed Sanitized value, or old value if an error occurred.
 	 */
 	public function sanitize_value_in_wp( $value, $name ) {
-		$setting = $this->get( $name );
+		$name = substr( $name, strlen( $this->prefix ) );
+		$setting = $this->get_setting( $name );
 
 		try {
 			$validated_value = $this->validator->validate( $value, $setting );

@@ -224,7 +224,7 @@ class WP_Site_Identity_Aggregate_Setting extends WP_Site_Identity_Setting implem
 	 * @return string Prefixed setting name.
 	 */
 	public function prefix( $name = '' ) {
-		return $name;
+		return $this->registry->prefix( $name );
 	}
 
 	/**
@@ -235,7 +235,7 @@ class WP_Site_Identity_Aggregate_Setting extends WP_Site_Identity_Setting implem
 	 * @return string Group identifier.
 	 */
 	public function group() {
-		return $this->registry->group() . '_' . $this->name;
+		return $this->registry->group();
 	}
 
 	/**

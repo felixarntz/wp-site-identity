@@ -326,18 +326,15 @@ final class WP_Site_Identity {
 	public function action_handle_settings_page() {
 		$setting_registry = $this->services->get( 'setting_registry' );
 
-		$owner_data = $setting_registry->get_setting( 'owner_data' );
-		$appearance = $setting_registry->get_setting( 'appearance' );
-
 		$factory = $this->services->get( 'settings_form_registry' )->factory();
 
-		$owner_data_form = $factory->create_form( 'owner_data', $owner_data );
+		$owner_data_form = $factory->create_form( $setting_registry->get_setting( 'owner_data' ) );
 		$owner_data_form->set_defaults();
 
 		// TODO: Add owner data settings sections and fields.
 		$owner_data_form->register();
 
-		$appearance_form = $factory->create_form( 'appearance', $appearance );
+		$appearance_form = $factory->create_form( $setting_registry->get_setting( 'appearance' ) );
 		$appearance_form->set_defaults();
 
 		// TODO: Add appearance settings sections and fields.
