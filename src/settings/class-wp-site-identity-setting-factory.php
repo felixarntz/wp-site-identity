@@ -72,17 +72,28 @@ class WP_Site_Identity_Setting_Factory {
 	}
 
 	/**
+	 * Gets the registry to use for creating new settings.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return WP_Site_Identity_Setting_Registry Registry for new settings.
+	 */
+	public function registry() {
+		return $this->registry;
+	}
+
+	/**
 	 * Gets the default default value depending on setting arguments.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param array $args Optional. Arguments for the setting. See {@see WP_Site_Identity_Aggregate_Setting::__construct}
+	 * @param array $args Arguments for the setting. See {@see WP_Site_Identity_Aggregate_Setting::__construct}
 	 *                    for a list of supported arguments.
 	 * @return array Arguments including a default attribute.
 	 */
-	protected function set_default_default_for_type( $args ) {
+	protected function set_default_default_for_type( array $args ) {
 		$type = isset( $args['type'] ) ? $args['type'] : '';
-		$min = isset( $args['min'] ) ? $args['min'] : false;
+		$min  = isset( $args['min'] ) ? $args['min'] : false;
 
 		switch ( $type ) {
 			case 'object':
@@ -112,16 +123,5 @@ class WP_Site_Identity_Setting_Factory {
 		}
 
 		return $args;
-	}
-
-	/**
-	 * Gets the registry to use for creating new settings.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return WP_Site_Identity_Setting_Registry Registry for new settings.
-	 */
-	public function registry() {
-		return $this->registry;
 	}
 }

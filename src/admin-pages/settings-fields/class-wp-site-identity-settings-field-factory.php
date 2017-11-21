@@ -47,6 +47,10 @@ class WP_Site_Identity_Settings_Field_Factory {
 	 * @return WP_Site_Identity_Settings_Field New settings field instance.
 	 */
 	public function create_field( WP_Site_Identity_Setting $setting, array $args = array() ) {
+		if ( ! isset( $args['render_callback'] ) ) {
+			$args = $this->set_default_args_for_setting( $args, $setting );
+		}
+
 		return new WP_Site_Identity_Settings_Field( $setting, $args, $this->registry );
 	}
 
@@ -59,5 +63,41 @@ class WP_Site_Identity_Settings_Field_Factory {
 	 */
 	public function registry() {
 		return $this->registry;
+	}
+
+	/**
+	 * Gets the default render callback depending on settings field arguments.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array                    $args    Arguments for the settings field. See {@see WP_Site_Identity_Settings_Field::__construct}
+	 *                                          for a list of supported arguments.
+	 * @param WP_Site_Identity_Setting $setting Setting the settings field is for.
+	 * @return array Arguments including a render callback.
+	 */
+	protected function set_default_args_for_setting( array $args, WP_Site_Identity_Setting $setting ) {
+		$type = isset( $args['type'] ) ? $args['type'] : $setting->get_type();
+
+		// TODO: Do something actually useful here.
+		switch ( $type ) {
+			case 'boolean':
+				$args['render_callback'] = null;
+				$args['render_for_attr'] = true;
+				break;
+			case 'number':
+				$args['render_callback'] = null;
+				$args['render_for_attr'] = true;
+				break;
+			case 'integer':
+				$args['render_callback'] = null;
+				$args['render_for_attr'] = true;
+				break;
+			case 'string':
+				$args['render_callback'] = null;
+				$args['render_for_attr'] = true;
+				break;
+		}
+
+		return $args;
 	}
 }

@@ -142,9 +142,6 @@ class WP_Site_Identity_Settings_Field {
 
 		if ( isset( $args['render_callback'] ) ) {
 			$this->set_render_callback( $args['render_callback'] );
-		} else {
-
-			// TODO: Set default render callback through helper class.
 		}
 
 		if ( ! empty( $args['section_slug'] ) ) {
@@ -159,9 +156,6 @@ class WP_Site_Identity_Settings_Field {
 
 		if ( isset( $args['render_for_attr'] ) ) {
 			$this->set_render_for_attr( $args['render_for_attr'] );
-		} else {
-
-			// TODO: Set default value through helper class.
 		}
 
 		if ( $registry ) {
