@@ -99,11 +99,14 @@ class WP_Site_Identity_Standard_Settings_Section_Registry implements WP_Site_Ide
 	 * @param WP_Site_Identity_Settings_Section $section Settings section to register.
 	 */
 	public function register_section( WP_Site_Identity_Settings_Section $section ) {
-		$slug = $section->get_slug();
+		$setting_registry = $this->form->get_setting_registry();
+
+		$slug  = $section->get_slug();
+		$group = $setting_registry->prefix( $setting_registry->group() );
 
 		$this->sections[ $slug ] = $section;
 
-		add_settings_section( $section->get_slug(), $section->get_title(), array( $section, 'render' ), $this->form->get_slug() );
+		add_settings_section( $slug, $section->get_title(), array( $section, 'render' ), $group );
 	}
 
 	/**

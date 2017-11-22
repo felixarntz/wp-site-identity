@@ -14,6 +14,22 @@
 class WP_Site_Identity_Aggregate_Setting extends WP_Site_Identity_Setting implements WP_Site_Identity_Setting_Registry {
 
 	/**
+	 * Prefix to use for all setting names within WordPress.
+	 *
+	 * @since 1.0.0
+	 * @var string
+	 */
+	protected $prefix = '';
+
+	/**
+	 * Group to use for all settings within WordPress.
+	 *
+	 * @since 1.0.0
+	 * @var string
+	 */
+	protected $group = '';
+
+	/**
 	 * Registered sub settings for the aggregate setting.
 	 *
 	 * @since 1.0.0
@@ -51,6 +67,8 @@ class WP_Site_Identity_Aggregate_Setting extends WP_Site_Identity_Setting implem
 
 		parent::__construct( $name, $args, $registry );
 
+		$this->prefix            = $this->registry->prefix( '' );
+		$this->group             = $this->prefix( $this->name );
 		$this->type              = 'object';
 		$this->validate_callback = array( $this, 'validate' );
 		$this->sanitize_callback = array( $this, 'sanitize' );
@@ -224,7 +242,7 @@ class WP_Site_Identity_Aggregate_Setting extends WP_Site_Identity_Setting implem
 	 * @return string Prefixed setting name.
 	 */
 	public function prefix( $name = '' ) {
-		return $this->registry->prefix( $name );
+		return $this->prefix . $name;
 	}
 
 	/**
@@ -235,7 +253,7 @@ class WP_Site_Identity_Aggregate_Setting extends WP_Site_Identity_Setting implem
 	 * @return string Group identifier.
 	 */
 	public function group() {
-		return $this->registry->group();
+		return $this->group;
 	}
 
 	/**

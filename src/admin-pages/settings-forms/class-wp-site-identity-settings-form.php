@@ -112,7 +112,7 @@ class WP_Site_Identity_Settings_Form {
 	 * @since 1.0.0
 	 */
 	public function render() {
-		$group = $this->setting_registry->group();
+		$group = $this->setting_registry->prefix( $this->setting_registry->group() );
 
 		?>
 		<form method="post" action="options.php" novalidate="novalidate">

@@ -328,9 +328,15 @@ class WP_Site_Identity_Standard_Setting_Registry implements WP_Site_Identity_Set
 	protected function register_in_wp( WP_Site_Identity_Setting $setting ) {
 		$name = $this->prefix( $setting->get_name() );
 
+		if ( is_a( $setting, 'WP_Site_Identity_Setting_Registry' ) ) {
+			$group = $setting->prefix( $setting->group() );
+		} else {
+			$group = $this->prefix( $this->group );
+		}
+
 		$args = array(
 			'type'              => $setting->get_type(),
-			'group'             => $this->group,
+			'group'             => $group,
 			'description'       => $setting->get_description(),
 			'sanitize_callback' => null,
 			'show_in_rest'      => false,
@@ -342,7 +348,7 @@ class WP_Site_Identity_Standard_Setting_Registry implements WP_Site_Identity_Set
 			);
 		}
 
-		register_setting( $this->group, $name, $args );
+		register_setting( $group, $name, $args );
 
 		add_filter( "sanitize_option_{$name}", array( $this, 'sanitize_value_in_wp' ), 10, 2 );
 	}
@@ -357,9 +363,15 @@ class WP_Site_Identity_Standard_Setting_Registry implements WP_Site_Identity_Set
 	protected function unregister_in_wp( WP_Site_Identity_Setting $setting ) {
 		$name = $this->prefix( $setting->get_name() );
 
+		if ( is_a( $setting, 'WP_Site_Identity_Setting_Registry' ) ) {
+			$group = $setting->prefix( $setting->group() );
+		} else {
+			$group = $this->prefix( $this->group );
+		}
+
 		remove_filter( "sanitize_option_{$name}", array( $this, 'sanitize_value_in_wp' ), 10 );
 
-		unregister_setting( $this->group, $name );
+		unregister_setting( $group, $name );
 	}
 
 	/**

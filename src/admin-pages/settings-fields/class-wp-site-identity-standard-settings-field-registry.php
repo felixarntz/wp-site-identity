@@ -99,7 +99,10 @@ class WP_Site_Identity_Standard_Settings_Field_Registry implements WP_Site_Ident
 	 * @param WP_Site_Identity_Settings_Field $field Settings field to register.
 	 */
 	public function register_field( WP_Site_Identity_Settings_Field $field ) {
-		$slug = $field->get_slug();
+		$setting_registry = $this->form->get_setting_registry();
+
+		$slug  = $field->get_slug();
+		$group = $setting_registry->prefix( $setting_registry->group() );
 
 		$this->fields[ $slug ] = $field;
 
@@ -108,7 +111,7 @@ class WP_Site_Identity_Standard_Settings_Field_Registry implements WP_Site_Ident
 			$args['label_for'] = $field->get_id_attr();
 		}
 
-		add_settings_field( $field->get_slug(), $field->get_title(), array( $field, 'render' ), $this->form->get_slug(), $field->get_section_slug(), $args );
+		add_settings_field( $slug, $field->get_title(), array( $field, 'render' ), $group, $field->get_section_slug(), $args );
 	}
 
 	/**
