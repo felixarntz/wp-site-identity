@@ -382,10 +382,10 @@ class WP_Site_Identity_Settings_Field {
 		$registry = $this->setting->get_registry();
 
 		if ( is_a( $registry, 'WP_Site_Identity_Aggregate_Setting' ) ) {
-			$this->id_attr   = str_replace( '_', '-', $registry->get_name() . '-' . $this->slug );
+			$this->id_attr   = str_replace( '_', '-', $registry->prefix( $registry->get_name() . '-' . $this->slug ) );
 			$this->name_attr = $registry->prefix( $registry->get_name() ) . '[' . $this->slug . ']';
 		} else {
-			$this->id_attr   = str_replace( '_', '-', $this->slug );
+			$this->id_attr   = str_replace( '_', '-', $registry->prefix( $this->slug ) );
 			$this->name_attr = $registry->prefix( $this->slug );
 		}
 	}

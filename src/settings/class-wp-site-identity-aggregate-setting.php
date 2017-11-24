@@ -68,7 +68,7 @@ class WP_Site_Identity_Aggregate_Setting extends WP_Site_Identity_Setting implem
 		parent::__construct( $name, $args, $registry );
 
 		$this->prefix            = $this->registry->prefix( '' );
-		$this->group             = $this->prefix( $this->name );
+		$this->group             = $this->name;
 		$this->type              = 'object';
 		$this->validate_callback = array( $this, 'validate' );
 		$this->sanitize_callback = array( $this, 'sanitize' );
