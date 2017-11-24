@@ -101,7 +101,7 @@ class WP_Site_Identity_Settings_Section {
 	 * @return bool True if the settings section is registered, false otherwise.
 	 */
 	public function is_registered() {
-		return $this->registry->has_section( $this->name );
+		return $this->registry->has_section( $this->slug );
 	}
 
 	/**

@@ -151,13 +151,13 @@ class WP_Site_Identity_Settings_Field {
 		}
 
 		if ( ! empty( $args['description'] ) ) {
-			$this->set_description( $args['description'] );
+			$this->description = $args['description'];
 		} else {
-			$this->set_description( $this->setting->get_description() );
+			$this->description = $this->setting->get_description();
 		}
 
 		if ( isset( $args['render_callback'] ) ) {
-			$this->set_render_callback( $args['render_callback'] );
+			$this->render_callback = $args['render_callback'];
 		}
 
 		if ( ! empty( $args['section_slug'] ) ) {
@@ -167,11 +167,11 @@ class WP_Site_Identity_Settings_Field {
 		}
 
 		if ( ! empty( $args['css_classes'] ) ) {
-			$this->set_css_classes( $args['css_classes'] );
+			$this->css_classes = $args['css_classes'];
 		}
 
 		if ( isset( $args['render_for_attr'] ) ) {
-			$this->set_render_for_attr( $args['render_for_attr'] );
+			$this->render_for_attr = $args['render_for_attr'];
 		}
 
 		if ( $registry ) {
@@ -191,7 +191,7 @@ class WP_Site_Identity_Settings_Field {
 	 * @return bool True if the settings field is registered, false otherwise.
 	 */
 	public function is_registered() {
-		return $this->registry->has_field( $this->name );
+		return $this->registry->has_field( $this->slug );
 	}
 
 	/**
@@ -377,11 +377,26 @@ class WP_Site_Identity_Settings_Field {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @global $wp_settings_fields Storage array of settings fields.
+	 *
 	 * @param string $section_slug Settings field's parent section slug.
 	 */
 	public function set_section_slug( $section_slug ) {
+		global $wp_settings_fields;
 
-		// TODO: Update in WordPress if already registered.
+		if ( $section_slug !== $this->section_slug && $this->is_registered() ) {
+			$setting_registry = $this->setting->get_registry();
+
+			$group = $setting_registry->prefix( $setting_registry->group() );
+
+			$field = $wp_settings_fields[ $group ][ $this->section_slug ][ $this->slug ];
+			unset( $wp_settings_fields[ $group ][ $this->section_slug ][ $this->slug ] );
+
+			// @codingStandardsIgnoreStart
+			$wp_settings_fields[ $group ][ $section_slug ][ $this->slug ] = $field;
+			// @codingStandardsIgnoreEnd
+		}
+
 		$this->section_slug = $section_slug;
 	}
 
@@ -423,11 +438,25 @@ class WP_Site_Identity_Settings_Field {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @global $wp_settings_fields Storage array of settings fields.
+	 *
 	 * @param bool $render_for_attr Whether to render the label 'for' attribute.
 	 */
 	public function set_render_for_attr( $render_for_attr ) {
+		global $wp_settings_fields;
 
-		// TODO: Update in WordPress if already registered.
+		if ( $render_for_attr !== $this->render_for_attr && $this->is_registered() ) {
+			$setting_registry = $this->setting->get_registry();
+
+			$group = $setting_registry->prefix( $setting_registry->group() );
+
+			$for_attr = $render_for_attr ? $this->id_attr : '';
+
+			// @codingStandardsIgnoreStart
+			$wp_settings_fields[ $group ][ $this->section_slug ][ $this->slug ]['args']['label_for'] = $for_attr;
+			// @codingStandardsIgnoreEnd
+		}
+
 		$this->render_for_attr = $render_for_attr;
 	}
 
