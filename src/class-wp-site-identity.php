@@ -235,9 +235,7 @@ final class WP_Site_Identity {
 		) );
 
 		$address_single_default = _x( '{line_1} {line_2}, {city}, {state_abbrev} {zip}', 'single line address template', 'wp-site-identity' );
-		$address_multi_default  = _x( '{line_1}
-{line_2}
-{city}, {state_abbrev} {zip}', 'multiple lines address template', 'wp-site-identity' );
+		$address_multi_default  = str_replace( '<br />', PHP_EOL, _x( '{line_1}<br />{line_2}<br />{city}, {state_abbrev} {zip}', 'multiple lines address template', 'wp-site-identity' ) );
 
 		$owner_data->factory()->create_setting( 'address_format_single', array(
 			'title'        => __( 'Address Format (Single Line)', 'wp-site-identity' ),
@@ -275,14 +273,14 @@ final class WP_Site_Identity {
 
 		$owner_data->factory()->create_setting( 'phone', array(
 			'title'        => __( 'Phone Number (Machine Readable)', 'wp-site-identity' ),
-			'description'  => __( 'The contact phone number, in machine readable format.', 'wp-site-identity' ),
+			'description'  => __( 'The contact phone number, in machine readable format (for example <code>+1555123456</code>).', 'wp-site-identity' ),
 			'type'         => 'string',
 			'show_in_rest' => true,
 		) )->register();
 
 		$owner_data->factory()->create_setting( 'phone_human', array(
 			'title'        => __( 'Phone Number (Human Readable)', 'wp-site-identity' ),
-			'description'  => __( 'The contact phone number, in human readable format.', 'wp-site-identity' ),
+			'description'  => __( 'The contact phone number, in human readable format (for example <code>(555) 123 456</code>).', 'wp-site-identity' ),
 			'type'         => 'string',
 			'show_in_rest' => true,
 		) )->register();
