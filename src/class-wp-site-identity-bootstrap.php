@@ -38,7 +38,8 @@ final class WP_Site_Identity_Bootstrap {
 	 * @since 1.0.0
 	 */
 	public function action_register_settings() {
-		$factory = $this->plugin->services()->get( 'setting_registry' )->factory();
+		$registry = $this->plugin->services()->get( 'setting_registry' );
+		$factory  = $registry->factory();
 
 		$owner_data = $factory->create_aggregate_setting( 'owner_data', array(
 			'title'        => __( 'Owner Data', 'wp-site-identity' ),
@@ -206,6 +207,15 @@ final class WP_Site_Identity_Bootstrap {
 
 		// TODO: Register appearance sub settings.
 		$appearance->register();
+
+		/**
+		 * Fires when additional settings for the plugin can be registered.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param WP_Site_Identity_Setting_Registry $registry Setting registry instance.
+		 */
+		do_action( 'wp_site_identity_register_settings', $registry );
 	}
 
 	/**
@@ -214,7 +224,8 @@ final class WP_Site_Identity_Bootstrap {
 	 * @since 1.0.0
 	 */
 	public function action_register_settings_page() {
-		$factory = $this->plugin->services()->get( 'admin_page_registry' )->factory();
+		$registry = $this->plugin->services()->get( 'admin_page_registry' );
+		$factory  = $registry->factory();
 
 		$factory->create_admin_submenu_page( 'settings', array(
 			'title'            => __( 'Site Identity Settings', 'wp-site-identity' ),
@@ -225,6 +236,15 @@ final class WP_Site_Identity_Bootstrap {
 			'menu_title'       => __( 'Site Identity', 'wp-site-identity' ),
 			'parent_slug'      => 'options-general.php',
 		) )->register();
+
+		/**
+		 * Fires when additional admin pages for the plugin can be registered.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param WP_Site_Identity_Admin_Page_Registry $registry Admin page registry instance.
+		 */
+		do_action( 'wp_site_identity_register_admin_pages', $registry );
 	}
 
 	/**
