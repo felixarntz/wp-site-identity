@@ -33,6 +33,26 @@ class WP_Site_Identity_Owner_Data extends WP_Site_Identity_Data {
 	}
 
 	/**
+	 * Retrieves the value for a specific identifier as HTML.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $name Setting identifier.
+	 * @return string Current value as HTML.
+	 */
+	public function get_as_html( $name ) {
+		switch ( $name ) {
+			case 'address_multi':
+			case 'address_format_multi':
+				$value = $this->get( $name );
+				$class = $this->get_css_class( $name );
+				return '<p class="' . esc_attr( $class ) . '">' . str_replace( PHP_EOL, '<br>', $value ) . '</p>';
+		}
+
+		return parent::get_as_html( $name );
+	}
+
+	/**
 	 * Gets the address in a specific format.
 	 *
 	 * @since 1.0.0

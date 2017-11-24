@@ -137,7 +137,7 @@ final class WP_Site_Identity {
 		if ( ! isset( $this->owner_data ) ) {
 			$aggregate_setting = $this->services->get( 'setting_registry' )->get_setting( 'owner_data' );
 
-			$this->owner_data = new WP_Site_Identity_Owner_Data( $aggregate_setting );
+			$this->owner_data = new WP_Site_Identity_Owner_Data( 'wpsi_', $aggregate_setting );
 		}
 		return $this->owner_data;
 	}
@@ -153,7 +153,7 @@ final class WP_Site_Identity {
 		if ( ! isset( $this->appearance ) ) {
 			$aggregate_setting = $this->services->get( 'setting_registry' )->get_setting( 'appearance' );
 
-			$this->appearance = new WP_Site_Identity_Data( $aggregate_setting );
+			$this->appearance = new WP_Site_Identity_Data( 'wpsi_', $aggregate_setting );
 		}
 		return $this->appearance;
 	}
