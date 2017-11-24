@@ -38,6 +38,22 @@ final class WP_Site_Identity {
 	private $services;
 
 	/**
+	 * Owner data access point.
+	 *
+	 * @since 1.0.0
+	 * @var WP_Site_Identity_Owner_Data
+	 */
+	private $owner_data;
+
+	/**
+	 * Appearance access point.
+	 *
+	 * @since 1.0.0
+	 * @var WP_Site_Identity_Data
+	 */
+	private $appearance;
+
+	/**
 	 * Constructor.
 	 *
 	 * Sets the plugin file and version and instantiates the service container.
@@ -102,13 +118,35 @@ final class WP_Site_Identity {
 	}
 
 	/**
+	 * Gets the owner data access point.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return WP_Site_Identity_Owner_Data Owner data access point.
+	 */
+	public function owner_data() {
+		return $this->owner_data;
+	}
+
+	/**
+	 * Gets the appearance access point.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return WP_Site_Identity_Data Appearance access point.
+	 */
+	public function appearance() {
+		return $this->appearance;
+	}
+
+	/**
 	 * Adds all hooks for the plugin.
 	 *
 	 * @since 1.0.0
 	 */
 	public function add_hooks() {
-		add_action( 'init', array( $this, 'action_register_settings' ), 10, 0 );
-		add_action( 'admin_menu', array( $this, 'action_register_settings_page' ), 10, 0 );
+		add_action( 'init', array( $this, 'action_register_settings' ), 1, 0 );
+		add_action( 'admin_menu', array( $this, 'action_register_settings_page' ), 1, 0 );
 	}
 
 	/**
@@ -117,8 +155,8 @@ final class WP_Site_Identity {
 	 * @since 1.0.0
 	 */
 	public function remove_hooks() {
-		remove_action( 'init', array( $this, 'action_register_settings' ), 10 );
-		remove_action( 'admin_menu', array( $this, 'action_register_settings_page' ), 10 );
+		remove_action( 'init', array( $this, 'action_register_settings' ), 1 );
+		remove_action( 'admin_menu', array( $this, 'action_register_settings_page' ), 1 );
 	}
 
 	/**
@@ -289,12 +327,15 @@ final class WP_Site_Identity {
 
 		$appearance = $factory->create_aggregate_setting( 'appearance', array(
 			'title'        => __( 'Appearance', 'wp-site-identity' ),
-			'description'  => __( 'Apperance information representing the brand.', 'wp-site-identity' ),
+			'description'  => __( 'Appearance information representing the brand.', 'wp-site-identity' ),
 			'show_in_rest' => true,
 		) );
 
 		// TODO: Register appearance sub settings.
 		$appearance->register();
+
+		$this->owner_data = new WP_Site_Identity_Owner_Data( $owner_data );
+		$this->appearance = new WP_Site_Identity_Data( $appearance );
 	}
 
 	/**
