@@ -22,7 +22,7 @@ class WP_Site_Identity_Settings_Field_Factory {
 	protected $registry;
 
 	/**
-	 * Settings field control callbacks class.
+	 * Settings field control callbacks instance.
 	 *
 	 * @since 1.0.0
 	 * @var WP_Site_Identity_Settings_Field_Control_Callbacks
@@ -73,6 +73,17 @@ class WP_Site_Identity_Settings_Field_Factory {
 	 */
 	public function registry() {
 		return $this->registry;
+	}
+
+	/**
+	 * Gets the settings fields control callbacks instance.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return WP_Site_Identity_Settings_Field_Control_Callbacks Control callbacks instance.
+	 */
+	public function callbacks() {
+		return $this->callbacks;
 	}
 
 	/**
