@@ -76,6 +76,7 @@ function wpsi_load() {
 	require_once $classes_dir . 'admin-pages/settings-fields/class-wp-site-identity-standard-settings-field-registry.php';
 	require_once $classes_dir . 'admin-pages/settings-fields/class-wp-site-identity-settings-field.php';
 	require_once $classes_dir . 'admin-pages/settings-fields/class-wp-site-identity-settings-field-factory.php';
+	require_once $classes_dir . 'admin-pages/settings-fields/class-wp-site-identity-settings-field-control-callbacks.php';
 }
 
 /**

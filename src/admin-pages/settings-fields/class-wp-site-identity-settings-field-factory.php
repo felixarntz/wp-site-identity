@@ -14,12 +14,20 @@
 class WP_Site_Identity_Settings_Field_Factory {
 
 	/**
-	 * Registry to use for instantiating setting fields.
+	 * Registry to use for instantiating settings fields.
 	 *
 	 * @since 1.0.0
 	 * @var WP_Site_Identity_Settings_Field_Registry
 	 */
 	protected $registry;
+
+	/**
+	 * Settings field control callbacks class.
+	 *
+	 * @since 1.0.0
+	 * @var WP_Site_Identity_Settings_Field_Control_Callbacks
+	 */
+	protected $callbacks;
 
 	/**
 	 * Constructor.
@@ -34,6 +42,8 @@ class WP_Site_Identity_Settings_Field_Factory {
 		} else {
 			$this->registry = new WP_Site_Identity_Standard_Settings_Field_Registry();
 		}
+
+		$this->callbacks = new WP_Site_Identity_Settings_Field_Control_Callbacks();
 	}
 
 	/**
@@ -78,23 +88,53 @@ class WP_Site_Identity_Settings_Field_Factory {
 	protected function set_default_args_for_setting( array $args, WP_Site_Identity_Setting $setting ) {
 		$type = isset( $args['type'] ) ? $args['type'] : $setting->get_type();
 
-		// TODO: Do something actually useful here.
 		switch ( $type ) {
 			case 'boolean':
-				$args['render_callback'] = null;
-				$args['render_for_attr'] = true;
+				$args['render_for_attr'] = false;
+				$args['render_callback'] = array( $this->callbacks, 'render_checkbox_control' );
 				break;
 			case 'number':
-				$args['render_callback'] = null;
-				$args['render_for_attr'] = true;
-				break;
 			case 'integer':
-				$args['render_callback'] = null;
 				$args['render_for_attr'] = true;
+				$args['render_callback'] = array( $this->callbacks, 'render_number_control' );
+				if ( ! isset( $args['css_classes'] ) ) {
+					$args['css_classes'] = array( 'small-text' );
+				}
 				break;
 			case 'string':
-				$args['render_callback'] = null;
 				$args['render_for_attr'] = true;
+
+				$choices = $setting->get_choices();
+				if ( ! empty( $choices ) ) {
+					if ( count( $choices ) <= 5 ) {
+						$args['render_callback'] = array( $this->callbacks, 'render_radio_control' );
+						$args['render_for_attr'] = false;
+					} else {
+						$args['render_callback'] = array( $this->callbacks, 'render_select_control' );
+					}
+				} else {
+					$css_classes = array( 'regular-text' );
+
+					$default = $setting->get_default();
+					$format  = $setting->get_format();
+
+					if ( 'email' === $format ) {
+						$args['render_callback'] = array( $this->callbacks, 'render_email_control' );
+					} elseif ( 'uri' === $format ) {
+						$args['render_callback'] = array( $this->callbacks, 'render_url_control' );
+						$css_classes[] = 'code';
+					} else {
+						if ( is_string( $default ) && false !== strpos( $default, "\n" ) ) {
+							$args['render_callback'] = array( $this->callbacks, 'render_textarea_control' );
+						} else {
+							$args['render_callback'] = array( $this->callbacks, 'render_text_control' );
+						}
+					}
+
+					if ( ! isset( $args['css_classes'] ) ) {
+						$args['css_classes'] = $css_classes;
+					}
+				}
 				break;
 		}
 
