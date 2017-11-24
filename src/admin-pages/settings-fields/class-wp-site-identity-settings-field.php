@@ -94,6 +94,22 @@ class WP_Site_Identity_Settings_Field {
 	protected $render_for_attr = true;
 
 	/**
+	 * Extra attributes for the settings field control as `$attr => $value` pairs.
+	 *
+	 * @since 1.0.0
+	 * @var array
+	 */
+	protected $extra_attrs = array();
+
+	/**
+	 * Extra props for the settings field control as `$prop => $enabled` pairs.
+	 *
+	 * @since 1.0.0
+	 * @var array
+	 */
+	protected $extra_props = array();
+
+	/**
 	 * Parent registry for the settings field.
 	 *
 	 * @since 1.0.0
@@ -122,7 +138,7 @@ class WP_Site_Identity_Settings_Field {
 	 *     @type bool     $render_for_attr  Whether WordPress should render the 'for' attribute on the label.
 	 *                                      Default true.
 	 * }
-	 * @param WP_Site_Identity_Settings_Field_Registry $registry Optional. Parent registry for the settings section.
+	 * @param WP_Site_Identity_Settings_Field_Registry $registry Optional. Parent registry for the settings field.
 	 */
 	public function __construct( WP_Site_Identity_Setting $setting, array $args = array(), WP_Site_Identity_Settings_Field_Registry $registry = null ) {
 		$this->slug    = $setting->get_name();
@@ -207,7 +223,7 @@ class WP_Site_Identity_Settings_Field {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return string Settings section slug.
+	 * @return string Settings field slug.
 	 */
 	public function get_slug() {
 		return $this->slug;
@@ -229,7 +245,7 @@ class WP_Site_Identity_Settings_Field {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return string Settings section title.
+	 * @return string Settings field title.
 	 */
 	public function get_title() {
 		return $this->title;
@@ -240,7 +256,7 @@ class WP_Site_Identity_Settings_Field {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return string Settings section description.
+	 * @return string Settings field description.
 	 */
 	public function get_description() {
 		return $this->description;
@@ -262,7 +278,7 @@ class WP_Site_Identity_Settings_Field {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return string Settings section's parent section slug.
+	 * @return string Settings field's parent section slug.
 	 */
 	public function get_section_slug() {
 		return $this->section_slug;
@@ -302,6 +318,28 @@ class WP_Site_Identity_Settings_Field {
 	}
 
 	/**
+	 * Gets the extra attributes for the settings field control.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array Extra attributes as `$attr => $value` pairs.
+	 */
+	public function get_extra_attrs() {
+		return $this->extra_attrs;
+	}
+
+	/**
+	 * Gets the extra props for the settings field control.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array Extra props as `$prop => $enabled` pairs.
+	 */
+	public function get_extra_props() {
+		return $this->extra_props;
+	}
+
+	/**
 	 * Checks whether WordPress should render the label 'for' attribute for the settings field.
 	 *
 	 * @since 1.0.0
@@ -317,7 +355,7 @@ class WP_Site_Identity_Settings_Field {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $description Settings section description.
+	 * @param string $description Settings field description.
 	 */
 	public function set_description( $description ) {
 		$this->description = $description;
@@ -328,7 +366,7 @@ class WP_Site_Identity_Settings_Field {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param callable|null $render_callback Settings section render callback, or null to unset.
+	 * @param callable|null $render_callback Settings field render callback, or null to unset.
 	 */
 	public function set_render_callback( $render_callback ) {
 		$this->render_callback = $render_callback;
@@ -339,7 +377,7 @@ class WP_Site_Identity_Settings_Field {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $section_slug Settings section's parent section slug.
+	 * @param string $section_slug Settings field's parent section slug.
 	 */
 	public function set_section_slug( $section_slug ) {
 
@@ -356,6 +394,28 @@ class WP_Site_Identity_Settings_Field {
 	 */
 	public function set_css_classes( array $css_classes ) {
 		$this->css_classes = $css_classes;
+	}
+
+	/**
+	 * Sets extra attributes for the settings field control.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $extra_attrs Extra attributes as `$attr => $value` pairs.
+	 */
+	public function set_extra_attrs( array $extra_attrs ) {
+		$this->extra_attrs = $extra_attrs;
+	}
+
+	/**
+	 * Sets extra props for the settings field control.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $extra_props Extra props as `$prop => $enabled` pairs.
+	 */
+	public function set_extra_props( array $extra_props ) {
+		$this->extra_props = $extra_props;
 	}
 
 	/**
