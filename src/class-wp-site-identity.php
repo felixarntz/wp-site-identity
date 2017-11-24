@@ -38,6 +38,14 @@ final class WP_Site_Identity {
 	private $services;
 
 	/**
+	 * Plugin bootstrap instance.
+	 *
+	 * @since 1.0.0
+	 * @var WP_Site_Identity_Bootstrap
+	 */
+	private $bootstrap;
+
+	/**
 	 * Owner data access point.
 	 *
 	 * @since 1.0.0
@@ -67,6 +75,7 @@ final class WP_Site_Identity {
 		$this->main_file = $main_file;
 		$this->version   = $version;
 		$this->services  = new WP_Site_Identity_Service_Container();
+		$this->bootstrap = new WP_Site_Identity_Bootstrap( $this );
 
 		$this->register_services();
 	}
@@ -125,6 +134,11 @@ final class WP_Site_Identity {
 	 * @return WP_Site_Identity_Owner_Data Owner data access point.
 	 */
 	public function owner_data() {
+		if ( ! isset( $this->owner_data ) ) {
+			$aggregate_setting = $this->services->get( 'setting_registry' )->get_setting( 'owner_data' );
+
+			$this->owner_data = new WP_Site_Identity_Owner_Data( $aggregate_setting );
+		}
 		return $this->owner_data;
 	}
 
@@ -136,6 +150,11 @@ final class WP_Site_Identity {
 	 * @return WP_Site_Identity_Data Appearance access point.
 	 */
 	public function appearance() {
+		if ( ! isset( $this->appearance ) ) {
+			$aggregate_setting = $this->services->get( 'setting_registry' )->get_setting( 'appearance' );
+
+			$this->appearance = new WP_Site_Identity_Data( $aggregate_setting );
+		}
 		return $this->appearance;
 	}
 
@@ -145,8 +164,8 @@ final class WP_Site_Identity {
 	 * @since 1.0.0
 	 */
 	public function add_hooks() {
-		add_action( 'init', array( $this, 'action_register_settings' ), 1, 0 );
-		add_action( 'admin_menu', array( $this, 'action_register_settings_page' ), 1, 0 );
+		add_action( 'init', array( $this->bootstrap, 'action_register_settings' ), 1, 0 );
+		add_action( 'admin_menu', array( $this->bootstrap, 'action_register_settings_page' ), 1, 0 );
 	}
 
 	/**
@@ -155,345 +174,8 @@ final class WP_Site_Identity {
 	 * @since 1.0.0
 	 */
 	public function remove_hooks() {
-		remove_action( 'init', array( $this, 'action_register_settings' ), 1 );
-		remove_action( 'admin_menu', array( $this, 'action_register_settings_page' ), 1 );
-	}
-
-	/**
-	 * Action to register the plugin's settings.
-	 *
-	 * @since 1.0.0
-	 */
-	public function action_register_settings() {
-		$factory = $this->services->get( 'setting_registry' )->factory();
-
-		$owner_data = $factory->create_aggregate_setting( 'owner_data', array(
-			'title'        => __( 'Owner Data', 'wp-site-identity' ),
-			'description'  => __( 'Data about the owner of the website.', 'wp-site-identity' ),
-			'show_in_rest' => true,
-		) );
-
-		$owner_data->factory()->create_setting( 'type', array(
-			'title'        => __( 'Type', 'wp-site-identity' ),
-			'description'  => __( 'Whether the owner is an organization or an individual.', 'wp-site-identity' ),
-			'type'         => 'string',
-			'default'      => 'individual',
-			'show_in_rest' => true,
-			'choices'      => array(
-				'individual'   => __( 'Individual', 'wp-site-identity' ),
-				'organization' => __( 'Organization', 'wp-site-identity' ),
-			),
-		) )->register();
-
-		$owner_data->factory()->create_setting( 'first_name', array(
-			'title'        => __( 'First Name', 'wp-site-identity' ),
-			'description'  => __( 'The owner&#8217;s first name.', 'wp-site-identity' ),
-			'type'         => 'string',
-			'show_in_rest' => true,
-		) )->register();
-
-		$owner_data->factory()->create_setting( 'last_name', array(
-			'title'        => __( 'Last Name', 'wp-site-identity' ),
-			'description'  => __( 'The owner&#8217;s last name.', 'wp-site-identity' ),
-			'type'         => 'string',
-			'show_in_rest' => true,
-		) )->register();
-
-		$owner_data->factory()->create_setting( 'organization_name', array(
-			'title'        => __( 'Organization Name', 'wp-site-identity' ),
-			'description'  => __( 'The organization&#8217;s name.', 'wp-site-identity' ),
-			'type'         => 'string',
-			'show_in_rest' => true,
-		) )->register();
-
-		$owner_data->factory()->create_setting( 'organization_legal_name', array(
-			'title'        => __( 'Organization Legal Name', 'wp-site-identity' ),
-			'description'  => __( 'The organization&#8217;s full legal name as registered.', 'wp-site-identity' ),
-			'type'         => 'string',
-			'show_in_rest' => true,
-		) )->register();
-
-		$owner_data->factory()->create_setting( 'address_line_1', array(
-			'title'        => __( 'Address Line 1', 'wp-site-identity' ),
-			'type'         => 'string',
-			'show_in_rest' => true,
-		) )->register();
-
-		$owner_data->factory()->create_setting( 'address_line_2', array(
-			'title'        => __( 'Address Line 2 (optional)', 'wp-site-identity' ),
-			'type'         => 'string',
-			'show_in_rest' => true,
-		) )->register();
-
-		$owner_data->factory()->create_setting( 'address_city', array(
-			'title'        => __( 'City', 'wp-site-identity' ),
-			'type'         => 'string',
-			'show_in_rest' => true,
-		) )->register();
-
-		$owner_data->factory()->create_setting( 'address_zip', array(
-			'title'        => __( 'Zip / Postal Code', 'wp-site-identity' ),
-			'type'         => 'string',
-			'show_in_rest' => true,
-		) )->register();
-
-		$owner_data->factory()->create_setting( 'address_state', array(
-			'title'        => __( 'State', 'wp-site-identity' ),
-			'type'         => 'string',
-			'show_in_rest' => true,
-		) )->register();
-
-		$owner_data->factory()->create_setting( 'address_state_abbrev', array(
-			'title'        => __( 'State (Abbrev.)', 'wp-site-identity' ),
-			'type'         => 'string',
-			'show_in_rest' => true,
-		) )->register();
-
-		$owner_data->factory()->create_setting( 'address_country', array(
-			'title'        => __( 'Country', 'wp-site-identity' ),
-			'type'         => 'string',
-			'show_in_rest' => true,
-		) )->register();
-
-		$owner_data->factory()->create_setting( 'address_country_abbrev', array(
-			'title'        => __( 'Country (Abbrev.)', 'wp-site-identity' ),
-			'type'         => 'string',
-			'show_in_rest' => true,
-		) )->register();
-
-		$address_placeholders_string = implode( ', ', array(
-			'{line_1}',
-			'{line_2}',
-			'{city}',
-			'{zip}',
-			'{state}',
-			'{state_abbrev}',
-			'{country}',
-			'{country_abbrev}',
-		) );
-
-		$address_single_default = _x( '{line_1} {line_2}, {city}, {state_abbrev} {zip}', 'single line address template', 'wp-site-identity' );
-		$address_multi_default  = str_replace( '<br />', PHP_EOL, _x( '{line_1}<br />{line_2}<br />{city}, {state_abbrev} {zip}', 'multiple lines address template', 'wp-site-identity' ) );
-
-		$owner_data->factory()->create_setting( 'address_format_single', array(
-			'title'        => __( 'Address Format (Single Line)', 'wp-site-identity' ),
-			/* translators: %s: comma-separated list of placeholders */
-			'description'  => sprintf( __( 'The address format as a single line. Allowed placeholders are: %s', 'wp_site-identity' ), $address_placeholders_string ),
-			'type'         => 'string',
-			'default'      => $address_single_default,
-			'show_in_rest' => true,
-		) )->register();
-
-		$owner_data->factory()->create_setting( 'address_format_multi', array(
-			'title'        => __( 'Address Format (Multiple Lines)', 'wp-site-identity' ),
-			/* translators: %s: comma-separated list of placeholders */
-			'description'  => sprintf( __( 'The address format as multiple lines. Allowed placeholders are: %s', 'wp_site-identity' ), $address_placeholders_string ),
-			'type'         => 'string',
-			'default'      => $address_multi_default,
-			'show_in_rest' => true,
-		) )->register();
-
-		$owner_data->factory()->create_setting( 'email', array(
-			'title'        => __( 'Email Address', 'wp-site-identity' ),
-			'type'         => 'string',
-			'default'      => get_option( 'admin_email' ),
-			'show_in_rest' => true,
-			'format'       => 'email',
-		) )->register();
-
-		$owner_data->factory()->create_setting( 'website', array(
-			'title'        => __( 'Website URL', 'wp-site-identity' ),
-			'type'         => 'string',
-			'default'      => home_url(),
-			'show_in_rest' => true,
-			'format'       => 'uri',
-		) )->register();
-
-		$owner_data->factory()->create_setting( 'phone', array(
-			'title'        => __( 'Phone Number (Machine Readable)', 'wp-site-identity' ),
-			'description'  => __( 'The contact phone number, in machine readable format (for example <code>+1555123456</code>).', 'wp-site-identity' ),
-			'type'         => 'string',
-			'show_in_rest' => true,
-		) )->register();
-
-		$owner_data->factory()->create_setting( 'phone_human', array(
-			'title'        => __( 'Phone Number (Human Readable)', 'wp-site-identity' ),
-			'description'  => __( 'The contact phone number, in human readable format (for example <code>(555) 123 456</code>).', 'wp-site-identity' ),
-			'type'         => 'string',
-			'show_in_rest' => true,
-		) )->register();
-
-		$owner_data->register();
-
-		$appearance = $factory->create_aggregate_setting( 'appearance', array(
-			'title'        => __( 'Appearance', 'wp-site-identity' ),
-			'description'  => __( 'Appearance information representing the brand.', 'wp-site-identity' ),
-			'show_in_rest' => true,
-		) );
-
-		// TODO: Register appearance sub settings.
-		$appearance->register();
-
-		$this->owner_data = new WP_Site_Identity_Owner_Data( $owner_data );
-		$this->appearance = new WP_Site_Identity_Data( $appearance );
-	}
-
-	/**
-	 * Action to register the plugin's settings page in the admin.
-	 *
-	 * @since 1.0.0
-	 */
-	public function action_register_settings_page() {
-		$factory = $this->services->get( 'admin_page_registry' )->factory();
-
-		$factory->create_admin_submenu_page( 'settings', array(
-			'title'            => __( 'Site Identity Settings', 'wp-site-identity' ),
-			'capability'       => 'manage_options',
-			'render_callback'  => array( $this, 'action_render_settings_page' ),
-			'handle_callback'  => array( $this, 'action_handle_settings_page' ),
-			'enqueue_callback' => null,
-			'menu_title'       => __( 'Site Identity', 'wp-site-identity' ),
-			'parent_slug'      => 'options-general.php',
-		) )->register();
-	}
-
-	/**
-	 * Action to handle a request to the plugin's settings page.
-	 *
-	 * @since 1.0.0
-	 */
-	public function action_handle_settings_page() {
-		$setting_registry = $this->services->get( 'setting_registry' );
-
-		$factory = $this->services->get( 'settings_form_registry' )->factory();
-
-		$owner_data_form = $factory->create_form( $setting_registry->get_setting( 'owner_data' ) );
-		$owner_data_form->set_defaults();
-
-		$owner_data_sections = array(
-			array(
-				'slug'   => 'basic',
-				'title'  => __( 'Basic Information', 'wp-site-identity' ),
-				'fields' => array(
-					'type',
-					'first_name',
-					'last_name',
-					'organization_name',
-					'organization_legal_name',
-				),
-			),
-			array(
-				'slug'   => 'address',
-				'title'  => __( 'Address', 'wp-site-identity' ),
-				'fields' => array(
-					'address_line_1',
-					'address_line_2',
-					'address_city',
-					'address_zip',
-					'address_state',
-					'address_state_abbrev',
-					'address_country',
-					'address_country_abbrev',
-					'address_format_single',
-					'address_format_multi',
-				),
-			),
-			array(
-				'slug'   => 'contact',
-				'title'  => __( 'Contact Data', 'wp-site-identity' ),
-				'fields' => array(
-					'email',
-					'website',
-					'phone',
-					'phone_human',
-				),
-			),
-		);
-
-		$section_factory = $owner_data_form->get_section_registry()->factory();
-		$field_registry  = $owner_data_form->get_field_registry();
-
-		foreach ( $owner_data_sections as $owner_data_section ) {
-			$section_factory->create_section( $owner_data_section['slug'], array(
-				'title' => $owner_data_section['title'],
-			) )->register();
-
-			foreach ( $owner_data_section['fields'] as $owner_data_field_slug ) {
-				$field_registry->get_field( $owner_data_field_slug )->set_section_slug( $owner_data_section['slug'] );
-			}
-		}
-
-		$field_registry->get_field( 'address_zip' )->set_css_classes( array() );
-		$field_registry->get_field( 'address_format_multi' )->set_extra_attrs( array(
-			'rows' => 4,
-		) );
-
-		foreach ( array( 'address_state_abbrev', 'address_country_abbrev' ) as $owner_data_field_slug ) {
-			$field_registry->get_field( $owner_data_field_slug )->set_css_classes( array( 'small-text' ) );
-		}
-
-		foreach ( array( 'address_format_single', 'address_format_multi' ) as $owner_data_field_slug ) {
-			$field_registry->get_field( $owner_data_field_slug )->set_css_classes( array( 'large-text', 'code' ) );
-		}
-
-		$owner_data_form->register();
-
-		$appearance_form = $factory->create_form( $setting_registry->get_setting( 'appearance' ) );
-		$appearance_form->set_defaults();
-
-		// TODO: Add appearance settings sections and fields.
-		$appearance_form->register();
-	}
-
-	/**
-	 * Action to render the plugin's settings page.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param WP_Site_Identity_Admin_Page $admin_page Admin page object.
-	 */
-	public function action_render_settings_page( $admin_page ) {
-		if ( ! is_a( $admin_page, 'WP_Site_Identity_Admin_Submenu_Page' ) || 'options-general.php' !== $admin_page->get_parent_slug() ) {
-			require ABSPATH . 'wp-admin/options-head.php';
-		}
-
-		$settings_forms = $this->services->get( 'settings_form_registry' )->get_all_forms();
-
-		$current_slug = null;
-
-		if ( ! empty( $settings_forms ) ) {
-			// @codingStandardsIgnoreStart
-			if ( isset( $_GET['tab'] ) && isset( $settings_forms[ $_GET['tab'] ] ) ) {
-				$current_slug = $_GET['tab'];
-			} else {
-				$current_slug = key( $settings_forms );
-			}
-			// @codingStandardsIgnoreEnd
-		}
-
-		?>
-		<div class="wrap">
-			<h1><?php echo esc_html( $admin_page->get_title() ); ?></h1>
-
-			<?php if ( ! empty( $settings_forms ) ) : ?>
-				<?php if ( count( $settings_forms ) > 1 ) : ?>
-					<h2 class="nav-tab-wrapper" style="margin-bottom:1em;">
-						<?php foreach ( $settings_forms as $slug => $settings_form ) : ?>
-							<a class="<?php echo esc_attr( $slug === $current_slug ? 'nav-tab nav-tab-active' : 'nav-tab' ); ?>" href="<?php echo esc_url( add_query_arg( 'tab', $slug, $admin_page->get_url() ) ); ?>">
-								<?php echo esc_html( $settings_form->get_setting_registry()->get_title() ); ?>
-							</a>
-						<?php endforeach; ?>
-					</h2>
-				<?php else : ?>
-					<h2 class="screen-reader-text">
-						<?php echo esc_html( $settings_forms[ $current_slug ]->get_setting_registry()->get_title() ); ?>
-					</h2>
-				<?php endif; ?>
-
-				<?php $settings_forms[ $current_slug ]->render(); ?>
-			<?php endif; ?>
-		</div>
-		<?php
+		remove_action( 'init', array( $this->bootstrap, 'action_register_settings' ), 1 );
+		remove_action( 'admin_menu', array( $this->bootstrap, 'action_register_settings_page' ), 1 );
 	}
 
 	/**

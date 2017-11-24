@@ -32,6 +32,7 @@ function wpsi_load() {
 	require_once $classes_dir . 'class-wp-site-identity-service-reference.php';
 	require_once $classes_dir . 'class-wp-site-identity-data.php';
 	require_once $classes_dir . 'class-wp-site-identity-owner-data.php';
+	require_once $classes_dir . 'class-wp-site-identity-bootstrap.php';
 
 	// Exceptions.
 	require_once $classes_dir . 'exceptions/class-wp-site-identity-admin-page-not-found-exception.php';
