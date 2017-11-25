@@ -277,8 +277,6 @@ final class WP_Site_Identity_Bootstrap {
 			$aggregate_setting_name = $matches[1];
 			$setting_name           = $matches[2];
 
-			var_dump( $setting_name );
-
 			$data = call_user_func( array( $this->plugin, $aggregate_setting_name ) );
 
 			return $data->get_as_html( $setting_name );
