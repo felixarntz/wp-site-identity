@@ -252,11 +252,20 @@ final class WP_Site_Identity_Bootstrap {
 				$callback_name = 'shortcode_callback_' . $aggregate_setting->get_name() . '_setting_' . $setting_name;
 
 				$factory->create_shortcode( $setting_name, array( $this, $callback_name ), array(
-					'label'         => $setting_title,
+					'label'         => __( 'Site Identity:', 'wp-site-identity' ) . ' ' . $setting_title,
 					'listItemImage' => $icon,
 				) )->register();
 			}
 		}
+
+		/**
+		 * Fires when additional shortcodes for the plugin can be registered.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param WP_Site_Identity_Shortcode_Registry $registry Shortcode registry instance.
+		 */
+		do_action( 'wp_site_identity_register_shortcodes', $registry );
 	}
 
 	/**
