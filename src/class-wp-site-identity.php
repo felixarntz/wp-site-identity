@@ -38,12 +38,28 @@ final class WP_Site_Identity {
 	private $services;
 
 	/**
-	 * Plugin bootstrap instance.
+	 * Plugin settings bootstrap instance.
 	 *
 	 * @since 1.0.0
-	 * @var WP_Site_Identity_Bootstrap
+	 * @var WP_Site_Identity_Bootstrap_Settings
 	 */
-	private $bootstrap;
+	private $bootstrap_settings;
+
+	/**
+	 * Plugin admin pages bootstrap instance.
+	 *
+	 * @since 1.0.0
+	 * @var WP_Site_Identity_Bootstrap_Admin_Pages
+	 */
+	private $bootstrap_admin_pages;
+
+	/**
+	 * Plugin shortcodes bootstrap instance.
+	 *
+	 * @since 1.0.0
+	 * @var WP_Site_Identity_Bootstrap_Shortcodes
+	 */
+	private $bootstrap_shortcodes;
 
 	/**
 	 * Owner data access point.
@@ -75,7 +91,10 @@ final class WP_Site_Identity {
 		$this->main_file = $main_file;
 		$this->version   = $version;
 		$this->services  = new WP_Site_Identity_Service_Container();
-		$this->bootstrap = new WP_Site_Identity_Bootstrap( $this );
+
+		$this->bootstrap_settings    = new WP_Site_Identity_Bootstrap_Settings( $this );
+		$this->bootstrap_admin_pages = new WP_Site_Identity_Bootstrap_Admin_Pages( $this );
+		$this->bootstrap_shortcodes  = new WP_Site_Identity_Bootstrap_Shortcodes( $this );
 
 		$this->register_services();
 	}
@@ -164,9 +183,9 @@ final class WP_Site_Identity {
 	 * @since 1.0.0
 	 */
 	public function add_hooks() {
-		add_action( 'init', array( $this->bootstrap, 'action_register_settings' ), 1, 0 );
-		add_action( 'init', array( $this->bootstrap, 'action_register_shortcodes' ), 10, 0 );
-		add_action( 'admin_menu', array( $this->bootstrap, 'action_register_settings_page' ), 1, 0 );
+		add_action( 'init', array( $this->bootstrap_settings, 'action_init' ), 1, 0 );
+		add_action( 'init', array( $this->bootstrap_shortcodes, 'action_init' ), 10, 0 );
+		add_action( 'admin_menu', array( $this->bootstrap_admin_pages, 'action_admin_menu' ), 1, 0 );
 	}
 
 	/**
@@ -175,9 +194,9 @@ final class WP_Site_Identity {
 	 * @since 1.0.0
 	 */
 	public function remove_hooks() {
-		remove_action( 'init', array( $this->bootstrap, 'action_register_settings' ), 1 );
-		remove_action( 'init', array( $this->bootstrap, 'action_register_shortcodes' ), 10 );
-		remove_action( 'admin_menu', array( $this->bootstrap, 'action_register_settings_page' ), 1 );
+		remove_action( 'init', array( $this->bootstrap_settings, 'action_init' ), 1 );
+		remove_action( 'init', array( $this->bootstrap_shortcodes, 'action_init' ), 10 );
+		remove_action( 'admin_menu', array( $this->bootstrap_admin_pages, 'action_admin_menu' ), 1 );
 	}
 
 	/**
