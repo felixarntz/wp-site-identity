@@ -43,6 +43,7 @@ function wpsi_load() {
 	require_once $classes_dir . 'exceptions/class-wp-site-identity-settings-form-not-found-exception.php';
 	require_once $classes_dir . 'exceptions/class-wp-site-identity-settings-section-not-found-exception.php';
 	require_once $classes_dir . 'exceptions/class-wp-site-identity-settings-field-not-found-exception.php';
+	require_once $classes_dir . 'exceptions/class-wp-site-identity-shortcode-not-found-exception.php';
 
 	// Settings.
 	require_once $classes_dir . 'settings/interface-wp-site-identity-setting-registry.php';
@@ -80,6 +81,12 @@ function wpsi_load() {
 	require_once $classes_dir . 'admin-pages/settings-fields/class-wp-site-identity-settings-field.php';
 	require_once $classes_dir . 'admin-pages/settings-fields/class-wp-site-identity-settings-field-factory.php';
 	require_once $classes_dir . 'admin-pages/settings-fields/class-wp-site-identity-settings-field-control-callbacks.php';
+
+	// Shortcodes.
+	require_once $classes_dir . 'shortcodes/interface-wp-site-identity-shortcode-registry.php';
+	require_once $classes_dir . 'shortcodes/class-wp-site-identity-standard-shortcode-registry.php';
+	require_once $classes_dir . 'shortcodes/class-wp-site-identity-shortcode.php';
+	require_once $classes_dir . 'shortcodes/class-wp-site-identity-shortcode-factory.php';
 }
 
 /**

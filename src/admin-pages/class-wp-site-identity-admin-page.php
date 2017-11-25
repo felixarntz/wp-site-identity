@@ -129,7 +129,7 @@ class WP_Site_Identity_Admin_Page {
 	 * @return bool True if the admin page is registered, false otherwise.
 	 */
 	public function is_registered() {
-		return $this->registry->has_admin_page( $this->name );
+		return $this->registry->has_admin_page( $this->slug );
 	}
 
 	/**

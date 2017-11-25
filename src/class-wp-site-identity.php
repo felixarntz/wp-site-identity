@@ -165,6 +165,7 @@ final class WP_Site_Identity {
 	 */
 	public function add_hooks() {
 		add_action( 'init', array( $this->bootstrap, 'action_register_settings' ), 1, 0 );
+		add_action( 'init', array( $this->bootstrap, 'action_register_shortcodes' ), 10, 0 );
 		add_action( 'admin_menu', array( $this->bootstrap, 'action_register_settings_page' ), 1, 0 );
 	}
 
@@ -175,6 +176,7 @@ final class WP_Site_Identity {
 	 */
 	public function remove_hooks() {
 		remove_action( 'init', array( $this->bootstrap, 'action_register_settings' ), 1 );
+		remove_action( 'init', array( $this->bootstrap, 'action_register_shortcodes' ), 10 );
 		remove_action( 'admin_menu', array( $this->bootstrap, 'action_register_settings_page' ), 1 );
 	}
 
@@ -204,5 +206,10 @@ final class WP_Site_Identity {
 
 		// Settings forms.
 		$this->services->register( 'settings_form_registry', 'WP_Site_Identity_Standard_Settings_Form_Registry' );
+
+		// Shortcodes.
+		$this->services->register( 'shortcode_registry', 'WP_Site_Identity_Standard_Shortcode_Registry', array(
+			'wpsi_',
+		) );
 	}
 }
