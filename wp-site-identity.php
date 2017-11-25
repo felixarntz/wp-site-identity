@@ -33,8 +33,9 @@ function wpsi_load() {
 	require_once $classes_dir . 'class-wp-site-identity-data.php';
 	require_once $classes_dir . 'class-wp-site-identity-owner-data.php';
 	require_once $classes_dir . 'class-wp-site-identity-bootstrap-settings.php';
-	require_once $classes_dir . 'class-wp-site-identity-bootstrap-admin-pages.php';
 	require_once $classes_dir . 'class-wp-site-identity-bootstrap-shortcodes.php';
+	require_once $classes_dir . 'class-wp-site-identity-bootstrap-admin-pages.php';
+	require_once $classes_dir . 'class-wp-site-identity-bootstrap-customizer.php';
 
 	// Exceptions.
 	require_once $classes_dir . 'exceptions/class-wp-site-identity-admin-page-not-found-exception.php';

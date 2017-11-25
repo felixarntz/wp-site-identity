@@ -7,7 +7,7 @@
  */
 
 /**
- * Bootstrap class to register the plugin's settings.
+ * Bootstrap class to register the plugin's shortcodes.
  *
  * @since 1.0.0
  */
