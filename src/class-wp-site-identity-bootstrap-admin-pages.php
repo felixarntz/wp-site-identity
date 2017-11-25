@@ -177,7 +177,31 @@ final class WP_Site_Identity_Bootstrap_Admin_Pages {
 
 		?>
 		<div class="wrap">
-			<h1><?php echo esc_html( $admin_page->get_title() ); ?></h1>
+			<h1 class="wp-heading-inline"><?php echo esc_html( $admin_page->get_title() ); ?></h1>
+
+			<?php
+			if ( 'owner_data' === $current_slug && current_user_can( 'customize' ) ) {
+				printf(
+					' <a class="page-title-action hide-if-no-customize" href="%1$s">%2$s</a>',
+					esc_url( add_query_arg(
+						array(
+							array(
+								'autofocus' => array(
+									'section' => $settings_forms[ $current_slug ]->get_setting_registry()->prefix( $settings_forms[ $current_slug ]->get_slug() ),
+								),
+							),
+							// @codingStandardsIgnoreStart
+							'return' => urlencode( remove_query_arg( wp_removable_query_args(), wp_unslash( $_SERVER['REQUEST_URI'] ) ) )
+							// @codingStandardsIgnoreEnd
+						),
+						admin_url( 'customize.php' )
+					) ),
+					__( 'Manage with Live Preview', 'wp-site-identity' )
+				);
+			}
+			?>
+
+			<hr class="wp-header-end">
 
 			<?php if ( ! empty( $settings_forms ) ) : ?>
 				<?php if ( count( $settings_forms ) > 1 ) : ?>
