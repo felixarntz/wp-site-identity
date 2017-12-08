@@ -87,17 +87,22 @@ final class WP_Site_Identity_Bootstrap_Customizer {
 			$setting_basename = $setting->get_name();
 
 			$setting_name  = $owner_data_registry->prefix( $owner_data_registry->get_name() ) . '[' . $setting_basename . ']';
-			$callback_name = 'partial_callback_' . $owner_data_registry->get_name() . '_setting_' . $setting_basename;
+
+			$validate_callback = 'validate_callback_' . $owner_data_registry->get_name() . '_setting_' . $setting_basename;
+			$sanitize_callback = 'sanitize_callback_' . $owner_data_registry->get_name() . '_setting_' . $setting_basename;
+			$partial_callback  = 'partial_callback_' . $owner_data_registry->get_name() . '_setting_' . $setting_basename;
 
 			if ( isset( $address_fields[ $setting_basename ] ) ) {
 				$address_fields[ $setting_basename ] = $setting_name;
 			}
 
 			$setting_args = array(
-				'type'       => 'option',
-				'default'    => $setting->get_default(),
-				'capability' => 'manage_options',
-				'transport'  => 'postMessage',
+				'type'              => 'option',
+				'capability'        => 'manage_options',
+				'default'           => $setting->get_default(),
+				'transport'         => 'postMessage',
+				'validate_callback' => array( $this, $validate_callback ),
+				'sanitize_callback' => array( $this, $sanitize_callback ),
 			);
 
 			$control_args = array(
@@ -118,7 +123,7 @@ final class WP_Site_Identity_Bootstrap_Customizer {
 			$wp_customize->selective_refresh->add_partial( $owner_data_registry->prefix( $setting_basename ), array(
 				'settings'            => array( $setting_name ),
 				'selector'            => '.' . $owner_data->get_css_class( $setting_basename ),
-				'render_callback'     => array( $this, $callback_name ),
+				'render_callback'     => array( $this, $partial_callback ),
 				'container_inclusive' => true,
 			) );
 		}
@@ -176,16 +181,90 @@ final class WP_Site_Identity_Bootstrap_Customizer {
 	 * @return mixed Method results.
 	 */
 	public function __call( $method, $args ) {
-		$is_partial_callback = preg_match( '/^partial_callback_([a-z_]+)_setting_([a-z_]+)$/', $method, $matches );
+		$is_callback = preg_match( '/^(validate|sanitize|partial)_callback_([a-z_]+)_setting_([a-z_]+)$/', $method, $matches );
 
-		if ( $is_partial_callback ) {
-			$aggregate_setting_name = $matches[1];
-			$setting_name           = $matches[2];
-
-			$data = call_user_func( array( $this->plugin, $aggregate_setting_name ) );
-
-			echo $data->get_as_html( $setting_name ); // WPCS: XSS OK.
+		if ( ! $is_callback ) {
+			return;
 		}
+
+		$callback_type          = $matches[1];
+		$aggregate_setting_name = $matches[2];
+		$setting_name           = $matches[3];
+
+		switch ( $callback_type ) {
+			case 'validate':
+				return $this->validate_setting( $args[0], $args[1], $aggregate_setting_name, $setting_name );
+			case 'sanitize':
+				return $this->sanitize_setting( $args[0], $aggregate_setting_name, $setting_name );
+			case 'partial':
+				$this->print_partial( $aggregate_setting_name, $setting_name );
+				break;
+		}
+	}
+
+	/**
+	 * Validates a Customizer setting.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_Error $validity               Error object to add validation errors to as necessary.
+	 * @param mixed    $value                  Value to sanitize.
+	 * @param string   $aggregate_setting_name Name of the aggregate setting or setting registry.
+	 * @param string   $setting_name           Name of the setting.
+	 * @return mixed Sanitized value.
+	 */
+	private function validate_setting( $validity, $value, $aggregate_setting_name, $setting_name ) {
+		$setting_registry  = $this->plugin->services()->get( 'setting_registry' );
+		$aggregate_setting = $setting_registry->get_setting( $aggregate_setting_name );
+		$setting           = $aggregate_setting->get_setting( $setting_name );
+
+		try {
+			$validated_value = $setting_registry->validator()->validate( $value, $setting );
+		} catch ( WP_Site_Identity_Setting_Validation_Error_Exception $e ) {
+			$prefixed = $setting_registry->prefix( $setting_name );
+
+			$validity->add( "valid_{$prefixed}", $e->getMessage() );
+		}
+
+		return $validity;
+	}
+
+	/**
+	 * Sanitizes a Customizer setting.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param mixed  $value                  Value to sanitize.
+	 * @param string $aggregate_setting_name Name of the aggregate setting or setting registry.
+	 * @param string $setting_name           Name of the setting.
+	 * @return mixed Sanitized value.
+	 */
+	private function sanitize_setting( $value, $aggregate_setting_name, $setting_name ) {
+		$setting_registry  = $this->plugin->services()->get( 'setting_registry' );
+		$aggregate_setting = $setting_registry->get_setting( $aggregate_setting_name );
+		$setting           = $aggregate_setting->get_setting( $setting_name );
+
+		try {
+			$validated_value = $setting_registry->validator()->validate( $value, $setting );
+		} catch ( WP_Site_Identity_Setting_Validation_Error_Exception $e ) {
+			$validated_value = $setting_registry->get_value_from_wp( $setting );
+		}
+
+		return $setting_registry->sanitizer()->sanitize( $validated_value, $setting );
+	}
+
+	/**
+	 * Prints a partial for a Customizer setting.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $aggregate_setting_name Name of the aggregate setting or setting registry.
+	 * @param string $setting_name           Name of the setting.
+	 */
+	private function print_partial( $aggregate_setting_name, $setting_name ) {
+		$data = call_user_func( array( $this->plugin, $aggregate_setting_name ) );
+
+		echo $data->get_as_html( $setting_name ); // WPCS: XSS OK.
 	}
 
 	/**

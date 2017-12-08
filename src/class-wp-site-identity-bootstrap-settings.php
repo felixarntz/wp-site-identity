@@ -150,21 +150,23 @@ final class WP_Site_Identity_Bootstrap_Settings {
 		$address_multi_default  = str_replace( '<br />', PHP_EOL, _x( '{line_1}<br />{line_2}<br />{city}, {state_abbrev} {zip}', 'multiple lines address template', 'wp-site-identity' ) );
 
 		$owner_data->factory()->create_setting( 'address_format_single', array(
-			'title'        => __( 'Address Format (Single Line)', 'wp-site-identity' ),
+			'title'             => __( 'Address Format (Single Line)', 'wp-site-identity' ),
 			/* translators: %s: comma-separated list of placeholders */
-			'description'  => sprintf( __( 'The address format as a single line. Allowed placeholders are: %s', 'wp_site-identity' ), $address_placeholders_string ),
-			'type'         => 'string',
-			'default'      => $address_single_default,
-			'show_in_rest' => true,
+			'description'       => sprintf( __( 'The address format as a single line. Allowed placeholders are: %s', 'wp_site-identity' ), $address_placeholders_string ),
+			'type'              => 'string',
+			'default'           => $address_single_default,
+			'validate_callback' => array( $this, 'validate_address_format' ),
+			'show_in_rest'      => true,
 		) )->register();
 
 		$owner_data->factory()->create_setting( 'address_format_multi', array(
-			'title'        => __( 'Address Format (Multiple Lines)', 'wp-site-identity' ),
+			'title'             => __( 'Address Format (Multiple Lines)', 'wp-site-identity' ),
 			/* translators: %s: comma-separated list of placeholders */
-			'description'  => sprintf( __( 'The address format as multiple lines. Allowed placeholders are: %s', 'wp_site-identity' ), $address_placeholders_string ),
-			'type'         => 'string',
-			'default'      => $address_multi_default,
-			'show_in_rest' => true,
+			'description'       => sprintf( __( 'The address format as multiple lines. Allowed placeholders are: %s', 'wp_site-identity' ), $address_placeholders_string ),
+			'type'              => 'string',
+			'default'           => $address_multi_default,
+			'validate_callback' => array( $this, 'validate_address_format' ),
+			'show_in_rest'      => true,
 		) )->register();
 
 		$owner_data->factory()->create_setting( 'email', array(
@@ -216,5 +218,29 @@ final class WP_Site_Identity_Bootstrap_Settings {
 		 * @param WP_Site_Identity_Setting_Registry $registry Setting registry instance.
 		 */
 		do_action( 'wp_site_identity_register_settings', $registry );
+	}
+
+	/**
+	 * Validates an address format setting.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $value Address format string.
+	 * @return string Address format string.
+	 *
+	 * @throws WP_Site_Identity_Setting_Validation_Error_Exception Thrown when a validation error occurs.
+	 */
+	public function validate_address_format( $value ) {
+		$value = trim( (string) $value );
+
+		if ( empty( $value ) ) {
+			throw new WP_Site_Identity_Setting_Validation_Error_Exception( __( 'The address format must not be empty.', 'wp-site-identity' ) );
+		}
+
+		if ( false === strpos( $value, '{' ) || false === strpos( $value, '}' ) ) {
+			throw new WP_Site_Identity_Setting_Validation_Error_Exception( __( 'The address format must contain at least one placeholder.', 'wp-site-identity' ) );
+		}
+
+		return $value;
 	}
 }
