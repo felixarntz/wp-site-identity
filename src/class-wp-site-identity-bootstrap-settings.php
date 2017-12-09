@@ -14,6 +14,14 @@
 final class WP_Site_Identity_Bootstrap_Settings {
 
 	/**
+	 * Plugin bootstrap instance.
+	 *
+	 * @since 1.0.0
+	 * @var WP_Site_Identity_Bootstrap
+	 */
+	private $bootstrap;
+
+	/**
 	 * Plugin instance.
 	 *
 	 * @since 1.0.0
@@ -26,10 +34,12 @@ final class WP_Site_Identity_Bootstrap_Settings {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param WP_Site_Identity $plugin Plugin instance.
+	 * @param WP_Site_Identity_Bootstrap $bootstrap Plugin bootstrap instance.
+	 * @param WP_Site_Identity           $plugin    Plugin instance.
 	 */
-	public function __construct( WP_Site_Identity $plugin ) {
-		$this->plugin = $plugin;
+	public function __construct( WP_Site_Identity_Bootstrap $bootstrap, WP_Site_Identity $plugin ) {
+		$this->bootstrap = $bootstrap;
+		$this->plugin    = $plugin;
 	}
 
 	/**
@@ -41,6 +51,8 @@ final class WP_Site_Identity_Bootstrap_Settings {
 		$registry = $this->plugin->services()->get( 'setting_registry' );
 		$factory  = $registry->factory();
 
+		$type_choices = $this->bootstrap->get_type_choices();
+
 		$owner_data = $factory->create_aggregate_setting( 'owner_data', array(
 			'title'        => __( 'Owner Data', 'wp-site-identity' ),
 			'description'  => __( 'Data about the owner of the website.', 'wp-site-identity' ),
@@ -49,14 +61,11 @@ final class WP_Site_Identity_Bootstrap_Settings {
 
 		$owner_data->factory()->create_setting( 'type', array(
 			'title'        => __( 'Type', 'wp-site-identity' ),
-			'description'  => __( 'Whether the owner is an organization or an individual.', 'wp-site-identity' ),
+			'description'  => __( 'Select the type of entity that is the owner of the site.', 'wp-site-identity' ),
 			'type'         => 'string',
-			'default'      => 'individual',
+			'default'      => key( $type_choices ),
 			'show_in_rest' => true,
-			'choices'      => array(
-				'individual'   => __( 'Individual', 'wp-site-identity' ),
-				'organization' => __( 'Organization', 'wp-site-identity' ),
-			),
+			'choices'      => $type_choices,
 		) )->register();
 
 		$owner_data->factory()->create_setting( 'first_name', array(

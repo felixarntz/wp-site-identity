@@ -38,36 +38,12 @@ final class WP_Site_Identity {
 	private $services;
 
 	/**
-	 * Plugin settings bootstrap instance.
+	 * Plugin bootstrap instance.
 	 *
 	 * @since 1.0.0
-	 * @var WP_Site_Identity_Bootstrap_Settings
+	 * @var WP_Site_Identity_Bootstrap
 	 */
-	private $bootstrap_settings;
-
-	/**
-	 * Plugin shortcodes bootstrap instance.
-	 *
-	 * @since 1.0.0
-	 * @var WP_Site_Identity_Bootstrap_Shortcodes
-	 */
-	private $bootstrap_shortcodes;
-
-	/**
-	 * Plugin admin pages bootstrap instance.
-	 *
-	 * @since 1.0.0
-	 * @var WP_Site_Identity_Bootstrap_Admin_Pages
-	 */
-	private $bootstrap_admin_pages;
-
-	/**
-	 * Plugin Customizer content bootstrap instance.
-	 *
-	 * @since 1.0.0
-	 * @var WP_Site_Identity_Bootstrap_Customizer
-	 */
-	private $bootstrap_customizer;
+	private $bootstrap;
 
 	/**
 	 * Owner data access point.
@@ -99,11 +75,7 @@ final class WP_Site_Identity {
 		$this->main_file = $main_file;
 		$this->version   = $version;
 		$this->services  = new WP_Site_Identity_Service_Container();
-
-		$this->bootstrap_settings    = new WP_Site_Identity_Bootstrap_Settings( $this );
-		$this->bootstrap_shortcodes  = new WP_Site_Identity_Bootstrap_Shortcodes( $this );
-		$this->bootstrap_admin_pages = new WP_Site_Identity_Bootstrap_Admin_Pages( $this );
-		$this->bootstrap_customizer  = new WP_Site_Identity_Bootstrap_Customizer( $this );
+		$this->bootstrap = new WP_Site_Identity_Bootstrap( $this );
 
 		$this->register_services();
 	}
@@ -192,11 +164,7 @@ final class WP_Site_Identity {
 	 * @since 1.0.0
 	 */
 	public function add_hooks() {
-		add_action( 'init', array( $this->bootstrap_settings, 'action_init' ), 1, 0 );
-		add_action( 'init', array( $this->bootstrap_shortcodes, 'action_init' ), 10, 0 );
-		add_action( 'admin_menu', array( $this->bootstrap_admin_pages, 'action_admin_menu' ), 1, 0 );
-		add_action( 'customize_register', array( $this->bootstrap_customizer, 'action_customize_register' ), 10, 1 );
-		add_action( 'customize_preview_init', array( $this->bootstrap_customizer, 'action_customize_preview_init' ), 10, 0 );
+		$this->bootstrap->add_hooks();
 	}
 
 	/**
@@ -205,11 +173,7 @@ final class WP_Site_Identity {
 	 * @since 1.0.0
 	 */
 	public function remove_hooks() {
-		remove_action( 'init', array( $this->bootstrap_settings, 'action_init' ), 1 );
-		remove_action( 'init', array( $this->bootstrap_shortcodes, 'action_init' ), 10 );
-		remove_action( 'admin_menu', array( $this->bootstrap_admin_pages, 'action_admin_menu' ), 1 );
-		remove_action( 'customize_register', array( $this->bootstrap_customizer, 'action_customize_register' ), 10 );
-		remove_action( 'customize_preview_init', array( $this->bootstrap_customizer, 'action_customize_preview_init' ), 10 );
+		$this->bootstrap->remove_hooks();
 	}
 
 	/**

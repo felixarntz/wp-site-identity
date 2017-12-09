@@ -14,6 +14,14 @@
 final class WP_Site_Identity_Bootstrap_Shortcodes {
 
 	/**
+	 * Plugin bootstrap instance.
+	 *
+	 * @since 1.0.0
+	 * @var WP_Site_Identity_Bootstrap
+	 */
+	private $bootstrap;
+
+	/**
 	 * Plugin instance.
 	 *
 	 * @since 1.0.0
@@ -26,10 +34,12 @@ final class WP_Site_Identity_Bootstrap_Shortcodes {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param WP_Site_Identity $plugin Plugin instance.
+	 * @param WP_Site_Identity_Bootstrap $bootstrap Plugin bootstrap instance.
+	 * @param WP_Site_Identity           $plugin    Plugin instance.
 	 */
-	public function __construct( WP_Site_Identity $plugin ) {
-		$this->plugin = $plugin;
+	public function __construct( WP_Site_Identity_Bootstrap $bootstrap, WP_Site_Identity $plugin ) {
+		$this->bootstrap = $bootstrap;
+		$this->plugin    = $plugin;
 	}
 
 	/**

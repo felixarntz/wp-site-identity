@@ -14,6 +14,14 @@
 final class WP_Site_Identity_Bootstrap_Admin_Pages {
 
 	/**
+	 * Plugin bootstrap instance.
+	 *
+	 * @since 1.0.0
+	 * @var WP_Site_Identity_Bootstrap
+	 */
+	private $bootstrap;
+
+	/**
 	 * Plugin instance.
 	 *
 	 * @since 1.0.0
@@ -26,10 +34,12 @@ final class WP_Site_Identity_Bootstrap_Admin_Pages {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param WP_Site_Identity $plugin Plugin instance.
+	 * @param WP_Site_Identity_Bootstrap $bootstrap Plugin bootstrap instance.
+	 * @param WP_Site_Identity           $plugin    Plugin instance.
 	 */
-	public function __construct( WP_Site_Identity $plugin ) {
-		$this->plugin = $plugin;
+	public function __construct( WP_Site_Identity_Bootstrap $bootstrap, WP_Site_Identity $plugin ) {
+		$this->bootstrap = $bootstrap;
+		$this->plugin    = $plugin;
 	}
 
 	/**
@@ -46,7 +56,7 @@ final class WP_Site_Identity_Bootstrap_Admin_Pages {
 			'capability'       => 'manage_options',
 			'render_callback'  => array( $this, 'action_render_settings_page' ),
 			'handle_callback'  => array( $this, 'action_handle_settings_page' ),
-			'enqueue_callback' => null,
+			'enqueue_callback' => array( $this, 'action_enqueue_settings_page' ),
 			'menu_title'       => __( 'Site Identity', 'wp-site-identity' ),
 			'parent_slug'      => 'options-general.php',
 		) )->register();
@@ -150,6 +160,24 @@ final class WP_Site_Identity_Bootstrap_Admin_Pages {
 	}
 
 	/**
+	 * Action to enqueue assets for the plugin's settings page.
+	 *
+	 * @since 1.0.0
+	 */
+	public function action_enqueue_settings_page() {
+		if ( 'owner_data' !== $this->get_current_tab() ) {
+			return;
+		}
+
+		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+
+		wp_enqueue_script( 'wpsi-settings-page', $this->plugin->url( "assets/dist/js/settings-page{$min}.js" ), array(), $this->plugin->version(), true );
+		wp_localize_script( 'wpsi-settings-page', 'wpsiSettingsPage', array(
+			'typeDependencies' => $this->bootstrap->get_type_dependencies(),
+		) );
+	}
+
+	/**
 	 * Action to render the plugin's settings page.
 	 *
 	 * @since 1.0.0
@@ -163,17 +191,7 @@ final class WP_Site_Identity_Bootstrap_Admin_Pages {
 
 		$settings_forms = $this->plugin->services()->get( 'settings_form_registry' )->get_all_forms();
 
-		$current_slug = null;
-
-		if ( ! empty( $settings_forms ) ) {
-			// @codingStandardsIgnoreStart
-			if ( isset( $_GET['tab'] ) && isset( $settings_forms[ $_GET['tab'] ] ) ) {
-				$current_slug = $_GET['tab'];
-			} else {
-				$current_slug = key( $settings_forms );
-			}
-			// @codingStandardsIgnoreEnd
-		}
+		$current_slug = $this->get_current_tab( $settings_forms );
 
 		?>
 		<div class="wrap">
@@ -196,7 +214,7 @@ final class WP_Site_Identity_Bootstrap_Admin_Pages {
 						),
 						admin_url( 'customize.php' )
 					) ),
-					__( 'Manage with Live Preview', 'wp-site-identity' )
+					esc_html__( 'Manage with Live Preview', 'wp-site-identity' )
 				);
 			}
 			?>
@@ -222,5 +240,33 @@ final class WP_Site_Identity_Bootstrap_Admin_Pages {
 			<?php endif; ?>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Gets the current tab for the plugin's settings page.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array|null $settings_forms Optional. Settings forms array. Default are all settings forms registered.
+	 * @return string|null Current tab slug, or null if no settings forms are registered.
+	 */
+	private function get_current_tab( array $settings_forms = null ) {
+		if ( null === $settings_forms ) {
+			$settings_forms = $this->plugin->services()->get( 'settings_form_registry' )->get_all_forms();
+		}
+
+		$current_tab = null;
+
+		if ( ! empty( $settings_forms ) ) {
+			// @codingStandardsIgnoreStart
+			if ( isset( $_GET['tab'] ) && isset( $settings_forms[ $_GET['tab'] ] ) ) {
+				$current_tab = $_GET['tab'];
+			} else {
+				$current_tab = key( $settings_forms );
+			}
+			// @codingStandardsIgnoreEnd
+		}
+
+		return $current_tab;
 	}
 }

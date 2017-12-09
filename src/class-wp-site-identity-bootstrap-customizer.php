@@ -14,6 +14,14 @@
 final class WP_Site_Identity_Bootstrap_Customizer {
 
 	/**
+	 * Plugin bootstrap instance.
+	 *
+	 * @since 1.0.0
+	 * @var WP_Site_Identity_Bootstrap
+	 */
+	private $bootstrap;
+
+	/**
 	 * Plugin instance.
 	 *
 	 * @since 1.0.0
@@ -26,10 +34,12 @@ final class WP_Site_Identity_Bootstrap_Customizer {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param WP_Site_Identity $plugin Plugin instance.
+	 * @param WP_Site_Identity_Bootstrap $bootstrap Plugin bootstrap instance.
+	 * @param WP_Site_Identity           $plugin    Plugin instance.
 	 */
-	public function __construct( WP_Site_Identity $plugin ) {
-		$this->plugin = $plugin;
+	public function __construct( WP_Site_Identity_Bootstrap $bootstrap, WP_Site_Identity $plugin ) {
+		$this->bootstrap = $bootstrap;
+		$this->plugin    = $plugin;
 	}
 
 	/**
@@ -125,6 +135,8 @@ final class WP_Site_Identity_Bootstrap_Customizer {
 				'selector'            => '.' . $owner_data->get_css_class( $setting_basename ),
 				'render_callback'     => array( $this, $partial_callback ),
 				'container_inclusive' => true,
+				'fallback_refresh'    => false,
+				'type'                => 'WPSiteIdentityPartial',
 			) );
 		}
 
@@ -142,12 +154,16 @@ final class WP_Site_Identity_Bootstrap_Customizer {
 			'selector'            => '.' . $owner_data->get_css_class( 'address_single' ),
 			'render_callback'     => array( $this, 'partial_callback_' . $owner_data_registry->get_name() . '_setting_address_single' ),
 			'container_inclusive' => true,
+			'fallback_refresh'    => false,
+			'type'                => 'WPSiteIdentityPartial',
 		) );
 		$wp_customize->selective_refresh->add_partial( $owner_data_registry->prefix( 'address_multi' ), array(
 			'settings'            => $address_multi_settings,
 			'selector'            => '.' . $owner_data->get_css_class( 'address_multi' ),
 			'render_callback'     => array( $this, 'partial_callback_' . $owner_data_registry->get_name() . '_setting_address_multi' ),
 			'container_inclusive' => true,
+			'fallback_refresh'    => false,
+			'type'                => 'WPSiteIdentityPartial',
 		) );
 
 		/**
@@ -161,12 +177,49 @@ final class WP_Site_Identity_Bootstrap_Customizer {
 	}
 
 	/**
+	 * Action to enqueue the plugin's Customizer controls script.
+	 *
+	 * @since 1.0.0
+	 */
+	public function action_customize_controls_enqueue_scripts() {
+		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+
+		wp_enqueue_script( 'wpsi-customize-controls', $this->plugin->url( "assets/dist/js/customize-controls{$min}.js" ), array( 'customize-controls' ), $this->plugin->version(), true );
+		wp_localize_script( 'wpsi-customize-controls', 'wpsiCustomizeControls', array(
+			'typeDependencies' => $this->bootstrap->get_type_dependencies(),
+		) );
+	}
+
+	/**
 	 * Action to enqueue the plugin's Customizer preview script.
 	 *
 	 * @since 1.0.0
 	 */
 	public function action_customize_preview_init() {
+		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
+		wp_enqueue_script( 'wpsi-customize-preview', $this->plugin->url( "assets/dist/js/customize-preview{$min}.js" ), array( 'customize-preview', 'customize-selective-refresh' ), $this->plugin->version(), true );
+		wp_localize_script( 'wpsi-customize-preview', 'wpsiCustomizePreview', array(
+			'selectorTemplate' => '.' . $this->plugin->owner_data()->get_css_class( '%name%' ),
+			'liveSettings'     => array(
+				'first_name',
+				'last_name',
+				'organization_name',
+				'organization_legal_name',
+				'address_line_1',
+				'address_line_2',
+				'address_city',
+				'address_zip',
+				'address_state',
+				'address_state_abbrev',
+				'address_country',
+				'address_country_abbrev',
+				'email',
+				'website',
+				'phone',
+				'phone_human',
+			),
+		) );
 	}
 
 	/**
