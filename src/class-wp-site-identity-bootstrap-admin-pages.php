@@ -84,45 +84,7 @@ final class WP_Site_Identity_Bootstrap_Admin_Pages {
 		$owner_data_form = $factory->create_form( $setting_registry->get_setting( 'owner_data' ) );
 		$owner_data_form->set_defaults();
 
-		$owner_data_sections = array(
-			array(
-				'slug'   => 'basic',
-				'title'  => __( 'Basic Information', 'wp-site-identity' ),
-				'fields' => array(
-					'type',
-					'first_name',
-					'last_name',
-					'organization_name',
-					'organization_legal_name',
-				),
-			),
-			array(
-				'slug'   => 'address',
-				'title'  => __( 'Address', 'wp-site-identity' ),
-				'fields' => array(
-					'address_line_1',
-					'address_line_2',
-					'address_city',
-					'address_zip',
-					'address_state',
-					'address_state_abbrev',
-					'address_country',
-					'address_country_abbrev',
-					'address_format_single',
-					'address_format_multi',
-				),
-			),
-			array(
-				'slug'   => 'contact',
-				'title'  => __( 'Contact Data', 'wp-site-identity' ),
-				'fields' => array(
-					'email',
-					'website',
-					'phone',
-					'phone_human',
-				),
-			),
-		);
+		$owner_data_sections = $this->bootstrap->get_owner_data_sections();
 
 		$section_factory = $owner_data_form->get_section_registry()->factory();
 		$field_registry  = $owner_data_form->get_field_registry();
