@@ -6,4 +6,4 @@
 
 # WP Site Identity
 
-Enables you to manage your site identity data and appearance in one centralized location.
+Enables you to manage your site identity data and brand in one centralized location.

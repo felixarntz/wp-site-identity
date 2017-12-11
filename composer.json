@@ -1,6 +1,6 @@
 {
   "name": "felixarntz/wp-site-identity",
-  "description": "Enables you to manage your site identity data and appearance in one centralized location.",
+  "description": "Enables you to manage your site identity data and brand in one centralized location.",
   "version": "1.0.0",
   "license": "GPL-3.0",
   "type": "wordpress-plugin",
@@ -10,6 +10,7 @@
     "site identity",
     "personal data",
     "business data",
+    "brand",
     "appearance",
     "centralized",
     "customization",

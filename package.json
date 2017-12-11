@@ -1,13 +1,14 @@
 {
   "name": "wp-site-identity",
   "version": "1.0.0",
-  "description": "Enables you to manage your site identity data and appearance in one centralized location.",
+  "description": "Enables you to manage your site identity data and brand in one centralized location.",
   "keywords": [
     "wordpress",
     "plugin",
     "site identity",
     "personal data",
     "business data",
+    "brand",
     "appearance",
     "centralized",
     "customization",

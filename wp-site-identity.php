@@ -8,14 +8,14 @@
  * @wordpress-plugin
  * Plugin Name: WP Site Identity
  * Plugin URI:  https://github.com/felixarntz/wp-site-identity
- * Description: Enables you to manage your site identity data and appearance in one centralized location.
+ * Description: Enables you to manage your site identity data and brand in one centralized location.
  * Version:     1.0.0
  * Author:      Felix Arntz
  * Author URI:  https://leaves-and-love.net
  * License:     GNU General Public License v3
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain: wp-site-identity
- * Tags:        site identity, personal data, business data, appearance, centralized, customization, customizer, widgets, shortcodes
+ * Tags:        site identity, personal data, business data, brand, appearance, centralized, customization, customizer, widgets, shortcodes
  */
 
 /**
