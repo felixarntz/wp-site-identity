@@ -129,7 +129,7 @@ class WP_Site_Identity_Owner_Data extends WP_Site_Identity_Data {
 		$parts = explode( PHP_EOL, $formatted );
 
 		foreach ( $parts as $part ) {
-			$part = trim( $part, ' ,;-' );
+			$part = trim( $part );
 
 			if ( empty( $part ) ) {
 				continue;
@@ -140,7 +140,25 @@ class WP_Site_Identity_Owner_Data extends WP_Site_Identity_Data {
 			$line_parts = explode( ' ', $part );
 
 			foreach ( $line_parts as $line_part ) {
-				$line_part = trim( $line_part, ',;-' );
+				if ( 1 === strlen( $line_part ) ) {
+					$separator = $this->get_final_separator( $line_part );
+					if ( $separator ) {
+						if ( count( $formatted_line_parts ) ) {
+							$last_line_part = array_pop( $formatted_line_parts );
+
+							$found = (bool) $this->get_final_separator( $last_line_part );
+							if ( ! $found ) {
+								$last_line_part .= $separator;
+							}
+
+							$formatted_line_parts[] = $last_line_part;
+						}
+
+						continue;
+					}
+				}
+
+				$line_part = trim( $line_part, '-' );
 
 				if ( empty( $line_part ) ) {
 					continue;
@@ -156,7 +174,35 @@ class WP_Site_Identity_Owner_Data extends WP_Site_Identity_Data {
 			$formatted_parts[] = implode( ' ', $formatted_line_parts );
 		}
 
-		return implode( PHP_EOL, $formatted_parts );
+		$result = implode( PHP_EOL, $formatted_parts );
+
+		if ( (bool) $this->get_final_separator( $result ) ) {
+			$result = substr( $result, 0, -1 );
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Gets the final character of a string if it is a separator.
+	 *
+	 * Separators are either , or ;
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $text Text to get the final separator for.
+	 * @return string|null Final separator, or null if there is no final separator.
+	 */
+	private function get_final_separator( $text ) {
+		$separator_chars = array( ',', ';' );
+
+		foreach ( $separator_chars as $char ) {
+			if ( substr( $text, -1, 1 ) === $char ) {
+				return $char;
+			}
+		}
+
+		return null;
 	}
 
 	/**
