@@ -96,7 +96,7 @@ final class WP_Site_Identity_Bootstrap_Customizer {
 		foreach ( $owner_data_registry->get_all_settings() as $setting ) {
 			$setting_basename = $setting->get_name();
 
-			$setting_name  = $owner_data_registry->prefix( $owner_data_registry->get_name() ) . '[' . $setting_basename . ']';
+			$setting_name = $owner_data_registry->prefix( $owner_data_registry->get_name() ) . '[' . $setting_basename . ']';
 
 			$validate_callback = 'validate_callback_' . $owner_data_registry->get_name() . '_setting_' . $setting_basename;
 			$sanitize_callback = 'sanitize_callback_' . $owner_data_registry->get_name() . '_setting_' . $setting_basename;
@@ -134,6 +134,22 @@ final class WP_Site_Identity_Bootstrap_Customizer {
 				'settings'            => array( $setting_name ),
 				'selector'            => '.' . $owner_data->get_css_class( $setting_basename ),
 				'render_callback'     => array( $this, $partial_callback ),
+				'container_inclusive' => true,
+				'fallback_refresh'    => false,
+				'type'                => 'WPSiteIdentityPartial',
+			) );
+		}
+
+		foreach ( array( 'phone', 'email', 'website' ) as $field ) {
+			$partial_settings = array( $owner_data_registry->prefix( $owner_data_registry->get_name() ) . '[' . $field . ']' );
+			if ( 'phone' === $field ) {
+				$partial_settings[] = $owner_data_registry->prefix( $owner_data_registry->get_name() ) . '[phone_human]';
+			}
+
+			$wp_customize->selective_refresh->add_partial( $owner_data_registry->prefix( $field . '_link' ), array(
+				'settings'            => $partial_settings,
+				'selector'            => '.' . $owner_data->get_css_class( $field . '_link' ),
+				'render_callback'     => array( $this, 'partial_callback_' . $owner_data_registry->get_name() . '_setting_' . $field . '_link' ),
 				'container_inclusive' => true,
 				'fallback_refresh'    => false,
 				'type'                => 'WPSiteIdentityPartial',

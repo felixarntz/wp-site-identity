@@ -62,15 +62,25 @@ final class WP_Site_Identity_Bootstrap_Shortcodes {
 				$setting_name  = $setting->get_name();
 				$setting_title = $setting->get_title();
 
-				switch ( $setting_name ) {
-					case 'address_format_single':
-						$setting_name  = 'address_single';
-						$setting_title = __( 'Address (Single Line)', 'wp-site-identity' );
-						break;
-					case 'address_format_multi':
-						$setting_name  = 'address_multi';
-						$setting_title = __( 'Address (Multiple Lines)', 'wp-site-identity' );
-						break;
+				if ( 'owner_data' === $aggregate_setting->get_name() ) {
+					switch ( $setting_name ) {
+						case 'address_format_single':
+							$setting_name  = 'address_single';
+							$setting_title = __( 'Address (Single Line)', 'wp-site-identity' );
+							break;
+						case 'address_format_multi':
+							$setting_name  = 'address_multi';
+							$setting_title = __( 'Address (Multiple Lines)', 'wp-site-identity' );
+							break;
+						case 'phone':
+						case 'email':
+						case 'website':
+							$factory->create_shortcode( $setting_name . '_link', array( $this, 'shortcode_callback_' . $aggregate_setting->get_name() . '_setting_' . $setting_name . '_link' ), array(
+								/* translators: %s: type of link */
+								'label'         => __( 'Site Identity:', 'wp-site-identity' ) . ' ' . sprintf( _x( '%s Link', 'shortcode label', 'wp-site-identity' ), $setting_title ),
+								'listItemImage' => $icon,
+							) )->register();
+					}
 				}
 
 				$callback_name = 'shortcode_callback_' . $aggregate_setting->get_name() . '_setting_' . $setting_name;

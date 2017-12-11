@@ -42,10 +42,36 @@ class WP_Site_Identity_Owner_Data extends WP_Site_Identity_Data {
 	 */
 	public function get_as_html( $name ) {
 		switch ( $name ) {
+			case 'phone_link':
+			case 'email_link':
+			case 'website_link':
+				$name = str_replace( '_link', '', $name );
+
+				$value = $this->get( $name );
+				$class = $this->get_css_class( $name . '_link' );
+
+				$url  = $value;
+				$text = $value;
+
+				if ( 'phone' === $name ) {
+					$url = 'tel:' . $url;
+
+					$human_readable = $this->get( 'phone_human' );
+					if ( ! empty( $human_readable ) ) {
+						$text = $human_readable;
+					}
+				} elseif ( 'email' === $name ) {
+					$url = 'mailto:' . $url;
+				} else {
+					$text = str_replace( array( 'http://', 'https://' ), '', $text );
+				}
+
+				return '<a class="' . esc_attr( $class ) . '" href="' . esc_attr( $url ) . '">' . esc_html( $text ) . '</a>';
 			case 'address_multi':
 			case 'address_format_multi':
 				$value = $this->get( $name );
 				$class = $this->get_css_class( $name );
+
 				return '<p class="' . esc_attr( $class ) . '">' . str_replace( PHP_EOL, '<br>', $value ) . '</p>';
 		}
 
