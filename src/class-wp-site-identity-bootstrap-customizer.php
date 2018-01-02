@@ -260,7 +260,7 @@ final class WP_Site_Identity_Bootstrap_Customizer {
 	 * @return mixed Method results.
 	 */
 	public function __call( $method, $args ) {
-		$is_callback = preg_match( '/^(validate|sanitize|partial)_callback_([a-z_]+)_setting_([a-z_]+)$/', $method, $matches );
+		$is_callback = preg_match( '/^(validate|sanitize|partial)_callback_([a-z0-9_]+)_setting_([a-z0-9_]+)$/U', $method, $matches );
 
 		if ( ! $is_callback ) {
 			return;
