@@ -58,6 +58,26 @@ final class WP_Site_Identity_Bootstrap_Shortcodes {
 
 			$icon = 'appearance' === $aggregate_setting->get_name() ? 'dashicons-admin-appearance' : 'dashicons-admin-users';
 
+			$ui_args = array(
+				'label'         => __( 'Site Identity:', 'wp-site-identity' ) . ' ' . $aggregate_setting->get_title(),
+				'listItemImage' => $icon,
+				'attrs'         => array(
+					array(
+						'attr'        => 'slug',
+						'title'       => _x( 'Field', 'shortcode UI title', 'wp-site-identity' ),
+						'description' => _x( 'Select the field for which to display the value.', 'shortcode UI description', 'wp-site-identity' ),
+						'type'        => 'select',
+						'default'     => '',
+						'options'     => array(
+							'' => _x( 'Please Select...', 'dropdown placeholder', 'wp-site-identity' ),
+						),
+						'meta'        => array(
+							'required' => 'required',
+						),
+					),
+				),
+			);
+
 			foreach ( $aggregate_setting->get_all_settings() as $setting ) {
 				$setting_name  = $setting->get_name();
 				$setting_title = $setting->get_title();
@@ -73,23 +93,22 @@ final class WP_Site_Identity_Bootstrap_Shortcodes {
 							$setting_title = __( 'Address (Multiple Lines)', 'wp-site-identity' );
 							break;
 						case 'phone':
+							$ui_args['attrs'][0]['options'][ $setting_name . '_link' ] = _x( 'Phone Number Link', 'shortcode label', 'wp-site-identity' );
+							break;
 						case 'email':
 						case 'website':
-							$factory->create_shortcode( $setting_name . '_link', array( $this, 'shortcode_callback_' . $aggregate_setting->get_name() . '_setting_' . $setting_name . '_link' ), array(
-								/* translators: %s: type of link */
-								'label'         => __( 'Site Identity:', 'wp-site-identity' ) . ' ' . sprintf( _x( '%s Link', 'shortcode label', 'wp-site-identity' ), $setting_title ),
-								'listItemImage' => $icon,
-							) )->register();
+							/* translators: %s: setting title */
+							$ui_args['attrs'][0]['options'][ $setting_name . '_link' ] = sprintf( _x( '%s Link', 'shortcode label', 'wp-site-identity' ), $setting_title );
+							break;
 					}
 				}
 
-				$callback_name = 'shortcode_callback_' . $aggregate_setting->get_name() . '_setting_' . $setting_name;
-
-				$factory->create_shortcode( $setting_name, array( $this, $callback_name ), array(
-					'label'         => __( 'Site Identity:', 'wp-site-identity' ) . ' ' . $setting_title,
-					'listItemImage' => $icon,
-				) )->register();
+				$ui_args['attrs'][0]['options'][ $setting_name ] = $setting_title;
 			}
+
+			$callback_name = 'shortcode_callback_' . $aggregate_setting->get_name();
+
+			$factory->create_shortcode( $aggregate_setting->get_name(), array( $this, $callback_name ), $ui_args )->register();
 		}
 
 		/**
@@ -114,11 +133,15 @@ final class WP_Site_Identity_Bootstrap_Shortcodes {
 	 * @return mixed Method results.
 	 */
 	public function __call( $method, $args ) {
-		$is_shortcode_callback = preg_match( '/^shortcode_callback_([a-z_]+)_setting_([a-z_]+)$/', $method, $matches );
+		$is_shortcode_callback = preg_match( '/^shortcode_callback_([a-z0-9_]+)$/', $method, $matches );
 
 		if ( $is_shortcode_callback ) {
+			if ( empty( $args[0]['slug'] ) ) {
+				return '';
+			}
+
 			$aggregate_setting_name = $matches[1];
-			$setting_name           = $matches[2];
+			$setting_name           = $args[0]['slug'];
 
 			$data = call_user_func( array( $this->plugin, $aggregate_setting_name ) );
 
