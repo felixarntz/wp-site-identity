@@ -281,8 +281,8 @@ class WP_Site_Identity_Aggregate_Setting extends WP_Site_Identity_Setting implem
 		$validated_data = array();
 		$original_data = $this->registry->get_value( $this->name );
 
-		$has_errors = false;
-		$has_valid  = false;
+		$has_error = false;
+		$has_valid = false;
 
 		foreach ( $this->settings as $setting ) {
 			$name  = $setting->get_name();
