@@ -207,5 +207,10 @@ final class WP_Site_Identity {
 		$this->services->register( 'shortcode_registry', 'WP_Site_Identity_Standard_Shortcode_Registry', array(
 			'wpsi_',
 		) );
+
+		// Widgets.
+		$this->services->register( 'widget_registry', 'WP_Site_Identity_Standard_Widget_Registry', array(
+			'wpsi_',
+		) );
 	}
 }

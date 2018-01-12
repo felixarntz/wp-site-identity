@@ -38,6 +38,14 @@ final class WP_Site_Identity_Bootstrap {
 	private $bootstrap_shortcodes;
 
 	/**
+	 * Plugin widgets bootstrap instance.
+	 *
+	 * @since 1.0.0
+	 * @var WP_Site_Identity_Bootstrap_Widgets
+	 */
+	private $bootstrap_widgets;
+
+	/**
 	 * Plugin admin pages bootstrap instance.
 	 *
 	 * @since 1.0.0
@@ -65,6 +73,7 @@ final class WP_Site_Identity_Bootstrap {
 
 		$this->bootstrap_settings    = new WP_Site_Identity_Bootstrap_Settings( $this, $this->plugin );
 		$this->bootstrap_shortcodes  = new WP_Site_Identity_Bootstrap_Shortcodes( $this, $this->plugin );
+		$this->bootstrap_widgets     = new WP_Site_Identity_Bootstrap_Widgets( $this, $this->plugin );
 		$this->bootstrap_admin_pages = new WP_Site_Identity_Bootstrap_Admin_Pages( $this, $this->plugin );
 		$this->bootstrap_customizer  = new WP_Site_Identity_Bootstrap_Customizer( $this, $this->plugin );
 	}
@@ -77,6 +86,7 @@ final class WP_Site_Identity_Bootstrap {
 	public function add_hooks() {
 		add_action( 'init', array( $this->bootstrap_settings, 'action_init' ), 1, 0 );
 		add_action( 'init', array( $this->bootstrap_shortcodes, 'action_init' ), 10, 0 );
+		add_action( 'widgets_init', array( $this->bootstrap_widgets, 'action_widgets_init' ), 10, 0 );
 		add_action( 'admin_menu', array( $this->bootstrap_admin_pages, 'action_admin_menu' ), 1, 0 );
 		add_action( 'customize_register', array( $this->bootstrap_customizer, 'action_customize_register' ), 10, 1 );
 		add_action( 'customize_controls_enqueue_scripts', array( $this->bootstrap_customizer, 'action_customize_controls_enqueue_scripts' ), 10, 0 );
@@ -91,6 +101,7 @@ final class WP_Site_Identity_Bootstrap {
 	public function remove_hooks() {
 		remove_action( 'init', array( $this->bootstrap_settings, 'action_init' ), 1 );
 		remove_action( 'init', array( $this->bootstrap_shortcodes, 'action_init' ), 10 );
+		remove_action( 'widgets_init', array( $this->bootstrap_widgets, 'action_widgets_init' ), 10 );
 		remove_action( 'admin_menu', array( $this->bootstrap_admin_pages, 'action_admin_menu' ), 1 );
 		remove_action( 'customize_register', array( $this->bootstrap_customizer, 'action_customize_register' ), 10 );
 		remove_action( 'customize_controls_enqueue_scripts', array( $this->bootstrap_customizer, 'action_customize_controls_enqueue_scripts' ), 10 );

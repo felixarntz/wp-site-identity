@@ -35,6 +35,7 @@ function wpsi_load() {
 	require_once $classes_dir . 'class-wp-site-identity-bootstrap.php';
 	require_once $classes_dir . 'class-wp-site-identity-bootstrap-settings.php';
 	require_once $classes_dir . 'class-wp-site-identity-bootstrap-shortcodes.php';
+	require_once $classes_dir . 'class-wp-site-identity-bootstrap-widgets.php';
 	require_once $classes_dir . 'class-wp-site-identity-bootstrap-admin-pages.php';
 	require_once $classes_dir . 'class-wp-site-identity-bootstrap-customizer.php';
 
