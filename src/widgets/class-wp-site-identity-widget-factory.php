@@ -37,19 +37,20 @@ class WP_Site_Identity_Widget_Factory {
 	}
 
 	/**
-	 * Instantiates a new widget object for the given tag and arguments.
+	 * Instantiates a new widget object for the given ID base and arguments.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string   $tag             Widget tag.
-	 * @param callable $render_callback Callback for the widget. Will already receive parsed attributes, so
-	 *                                  including that logic is not necessary.
-	 * @param array    $args            Optional. Arguments for the widget. See {@see WP_Site_Identity_Widget::__construct}
-	 *                                  for a list of supported arguments.
+	 * @param string   $id_base         Base ID for the widget, lowercase and unique. If left empty,
+	 *                                  a portion of the widget's class name will be used. Has to be unique.
+	 * @param string   $name            Name for the widget displayed on the configuration page.
+	 * @param string   $description     Widget description.
+	 * @param callable $render_callback Widget rendering callback. Must return its content.
+	 * @param array    $fields          Optional. Fields for the shortcode as `$attr => $args` pairs. Default empty array.
 	 * @return WP_Site_Identity_Widget New widget instance.
 	 */
-	public function create_widget( $tag, $render_callback, $args = array() ) {
-		return new WP_Site_Identity_Widget( $tag, $render_callback, $args, $this->registry );
+	public function create_widget( $id_base, $name, $description, $render_callback, array $fields = array() ) {
+		return new WP_Site_Identity_Widget( $this->registry->prefix( $id_base ), $name, $description, $render_callback, $fields, $this->registry );
 	}
 
 	/**

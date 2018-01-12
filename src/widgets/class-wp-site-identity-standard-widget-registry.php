@@ -14,6 +14,14 @@
 class WP_Site_Identity_Standard_Widget_Registry implements WP_Site_Identity_Widget_Registry {
 
 	/**
+	 * Prefix to use for all shortcode tags within WordPress.
+	 *
+	 * @since 1.0.0
+	 * @var string
+	 */
+	protected $prefix = '';
+
+	/**
 	 * All registered widgets as `$id_base => $instance` pairs.
 	 *
 	 * @since 1.0.0
@@ -32,9 +40,15 @@ class WP_Site_Identity_Standard_Widget_Registry implements WP_Site_Identity_Widg
 	/**
 	 * Constructor.
 	 *
+	 * Sets the prefix to use for registered widgets.
+	 *
 	 * @since 1.0.0
+	 *
+	 * @param string $prefix Prefix to use for all shortcode tags within WordPress.
 	 */
-	public function __construct() {
+	public function __construct( $prefix ) {
+		$this->prefix = $prefix;
+
 		$this->factory = new WP_Site_Identity_Widget_Factory( $this );
 	}
 
@@ -123,5 +137,19 @@ class WP_Site_Identity_Standard_Widget_Registry implements WP_Site_Identity_Widg
 	 */
 	public function factory() {
 		return $this->factory;
+	}
+
+	/**
+	 * Prefixes a widget ID base.
+	 *
+	 * If no ID base is given, the prefix is simply returned.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $id_base Widget ID base to prefix.
+	 * @return string Prefixed widget ID base.
+	 */
+	public function prefix( $id_base = '' ) {
+		return $this->prefix . $id_base;
 	}
 }

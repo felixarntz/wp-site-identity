@@ -70,4 +70,16 @@ interface WP_Site_Identity_Widget_Registry {
 	 * @return WP_Site_Identity_Widget_Factory Factory to create widget objects.
 	 */
 	public function factory();
+
+	/**
+	 * Prefixes a widget ID base.
+	 *
+	 * If no ID base is given, the prefix is simply returned.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $id_base Widget ID base to prefix.
+	 * @return string Prefixed widget ID base.
+	 */
+	public function prefix( $id_base = '' );
 }
