@@ -114,11 +114,11 @@ final class WP_Site_Identity_Bootstrap_Admin_Pages {
 
 		$owner_data_form->register();
 
-		$appearance_form = $factory->create_form( $setting_registry->get_setting( 'appearance' ) );
-		$appearance_form->set_defaults();
+		$brand_data_form = $factory->create_form( $setting_registry->get_setting( 'brand_data' ) );
+		$brand_data_form->set_defaults();
 
-		// TODO: Add appearance settings sections and fields.
-		$appearance_form->register();
+		// TODO: Add brand data settings sections and fields.
+		$brand_data_form->register();
 	}
 
 	/**

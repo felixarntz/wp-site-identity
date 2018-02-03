@@ -210,14 +210,14 @@ final class WP_Site_Identity_Bootstrap_Settings {
 
 		$owner_data->register();
 
-		$appearance = $factory->create_aggregate_setting( 'appearance', array(
-			'title'        => __( 'Appearance', 'wp-site-identity' ),
-			'description'  => __( 'Appearance information representing the brand.', 'wp-site-identity' ),
+		$brand_data = $factory->create_aggregate_setting( 'brand_data', array(
+			'title'        => __( 'Brand', 'wp-site-identity' ),
+			'description'  => __( 'Appearance information representing the brand_data.', 'wp-site-identity' ),
 			'show_in_rest' => true,
 		) );
 
-		// TODO: Register appearance sub settings.
-		$appearance->register();
+		// TODO: Register brand data sub settings.
+		$brand_data->register();
 
 		/**
 		 * Fires when additional settings for the plugin can be registered.

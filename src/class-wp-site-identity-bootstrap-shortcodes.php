@@ -56,7 +56,7 @@ final class WP_Site_Identity_Bootstrap_Shortcodes {
 				continue;
 			}
 
-			$icon = 'appearance' === $aggregate_setting->get_name() ? 'dashicons-admin-appearance' : 'dashicons-admin-users';
+			$icon = 'brand_data' === $aggregate_setting->get_name() ? 'dashicons-admin-appearance' : 'dashicons-admin-users';
 
 			$ui_args = array(
 				'label'         => __( 'Site Identity:', 'wp-site-identity' ) . ' ' . $aggregate_setting->get_title(),

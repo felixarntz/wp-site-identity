@@ -54,12 +54,12 @@ final class WP_Site_Identity {
 	private $owner_data;
 
 	/**
-	 * Appearance access point.
+	 * Brand data access point.
 	 *
 	 * @since 1.0.0
 	 * @var WP_Site_Identity_Data
 	 */
-	private $appearance;
+	private $brand_data;
 
 	/**
 	 * Constructor.
@@ -143,19 +143,19 @@ final class WP_Site_Identity {
 	}
 
 	/**
-	 * Gets the appearance access point.
+	 * Gets the brand data access point.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @return WP_Site_Identity_Data Appearance access point.
 	 */
-	public function appearance() {
-		if ( ! isset( $this->appearance ) ) {
-			$aggregate_setting = $this->services->get( 'setting_registry' )->get_setting( 'appearance' );
+	public function brand_data() {
+		if ( ! isset( $this->brand_data ) ) {
+			$aggregate_setting = $this->services->get( 'setting_registry' )->get_setting( 'brand_data' );
 
-			$this->appearance = new WP_Site_Identity_Data( 'wpsi_', $aggregate_setting );
+			$this->brand_data = new WP_Site_Identity_Data( 'wpsi_', $aggregate_setting );
 		}
-		return $this->appearance;
+		return $this->brand_data;
 	}
 
 	/**
