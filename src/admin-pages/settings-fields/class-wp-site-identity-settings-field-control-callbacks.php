@@ -72,6 +72,34 @@ final class WP_Site_Identity_Settings_Field_Control_Callbacks {
 	}
 
 	/**
+	 * Renders an image control for a field.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param mixed                           $value Current value for the field.
+	 * @param WP_Site_Identity_Settings_Field $field Field instance.
+	 */
+	public function render_image_control( $value, WP_Site_Identity_Settings_Field $field ) {
+		$image_url = '';
+		$image_alt = '';
+		if ( ! empty( $value ) ) {
+			$image_url = (string) wp_get_attachment_image_url( $value, 'medium' );
+			$image_alt = get_the_title( $value );
+		}
+		?>
+		<div class="wpsi-image-control-wrap">
+			<?php $this->render_text_control( $value, $field, 'number' ); ?>
+
+			<div class="wpsi-image-control-image">
+				<?php if ( ! empty( $image_url ) ) : ?>
+					<img src="<?php echo esc_url( $image_url ); ?>" alt="<?php echo esc_attr( $image_alt ); ?>" />
+				<?php endif; ?>
+			</div>
+		</div>
+		<?php
+	}
+
+	/**
 	 * Renders a textarea control for a field.
 	 *
 	 * @since 1.0.0
