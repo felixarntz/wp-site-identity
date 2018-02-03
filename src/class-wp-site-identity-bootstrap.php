@@ -109,7 +109,7 @@ final class WP_Site_Identity_Bootstrap {
 	}
 
 	/**
-	 * Gets the array of sections for the Owner data settings.
+	 * Gets the array of sections for the owner data settings.
 	 *
 	 * @since 1.0.0
 	 *
@@ -158,7 +158,7 @@ final class WP_Site_Identity_Bootstrap {
 		);
 
 		/**
-		 * Filters the sections for the Owner data settings.
+		 * Filters the sections for the owner data settings.
 		 *
 		 * @since 1.0.0
 		 *
@@ -166,6 +166,46 @@ final class WP_Site_Identity_Bootstrap {
 		 *                        $slug, $title and $fields keys.
 		 */
 		return apply_filters( 'wp_site_identity_owner_data_sections', $sections );
+	}
+
+	/**
+	 * Gets the array of sections for the brand data settings.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array Sections as `$slug => $data` pairs, where $data is an associative array containing
+	 *               $slug, $title and $fields keys.
+	 */
+	public function get_brand_data_sections() {
+		$sections = array(
+			'media'  => array(
+				'slug'   => 'media',
+				'title'  => __( 'Media', 'wp-site-identity' ),
+				'fields' => array(
+					'logo',
+					'icon',
+				),
+			),
+			'colors' => array(
+				'slug'   => 'colors',
+				'title'  => __( 'Colors', 'wp-site-identity' ),
+				'fields' => array(
+					'primary_color',
+					'secondary_color',
+					'tertiary_color',
+				),
+			),
+		);
+
+		/**
+		 * Filters the sections for the brand data settings.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param array $sections Sections as `$slug => $data` pairs, where $data is an associative array containing
+		 *                        $slug, $title and $fields keys.
+		 */
+		return apply_filters( 'wp_site_identity_brand_data_sections', $sections );
 	}
 
 	/**

@@ -50,14 +50,10 @@ final class WP_Site_Identity_Bootstrap_Customizer {
 	 * @param WP_Customize_Manager $wp_customize Customize manager instance.
 	 */
 	public function action_customize_register( $wp_customize ) {
-		$setting_registry    = $this->plugin->services()->get( 'setting_registry' );
-		$owner_data_registry = $setting_registry->get_setting( 'owner_data' );
-		$owner_data          = $this->plugin->owner_data();
+		$setting_registry = $this->plugin->services()->get( 'setting_registry' );
+		$panel_slug       = 'site_identity';
 
-		$site_identity_panel_slug = 'site_identity';
-		$owner_data_section_slug  = 'owner_data';
-
-		$wp_customize->add_panel( $setting_registry->prefix( $site_identity_panel_slug ), array(
+		$wp_customize->add_panel( $setting_registry->prefix( $panel_slug ), array(
 			'title'    => __( 'Site Identity', 'wp-site-identity' ),
 			'priority' => 20,
 		) );
@@ -70,127 +66,11 @@ final class WP_Site_Identity_Bootstrap_Customizer {
 				$title_tagline_section->title = __( 'Title and Tagline', 'wp-site-identity' );
 			}
 
-			$title_tagline_section->panel = $setting_registry->prefix( $site_identity_panel_slug );
+			$title_tagline_section->panel = $setting_registry->prefix( $panel_slug );
 		}
 
-		$wp_customize->add_section( $setting_registry->prefix( $owner_data_section_slug ), array(
-			'title'      => __( 'Owner Data', 'wp-site-identity' ),
-			'capability' => 'manage_options',
-			'panel'      => $setting_registry->prefix( $site_identity_panel_slug ),
-			'priority'   => 30,
-		) );
-
-		$address_fields = array(
-			'address_line_1'         => '',
-			'address_line_2'         => '',
-			'address_city'           => '',
-			'address_zip'            => '',
-			'address_state'          => '',
-			'address_state_abbrev'   => '',
-			'address_country'        => '',
-			'address_country_abbrev' => '',
-			'address_format_single'  => '',
-			'address_format_multi'   => '',
-		);
-
-		$owner_data_sections = $this->bootstrap->get_owner_data_sections();
-
-		$priority = 0;
-
-		foreach ( $owner_data_sections as $owner_data_section ) {
-			$priority += 10;
-
-			foreach ( $owner_data_section['fields'] as $field ) {
-				$setting          = $owner_data_registry->get_setting( $field );
-				$setting_basename = $setting->get_name();
-
-				$setting_name = $owner_data_registry->prefix( $owner_data_registry->get_name() ) . '[' . $setting_basename . ']';
-
-				$validate_callback = 'validate_callback_' . $owner_data_registry->get_name() . '_setting_' . $setting_basename;
-				$sanitize_callback = 'sanitize_callback_' . $owner_data_registry->get_name() . '_setting_' . $setting_basename;
-				$partial_callback  = 'partial_callback_' . $owner_data_registry->get_name() . '_setting_' . $setting_basename;
-
-				if ( isset( $address_fields[ $setting_basename ] ) ) {
-					$address_fields[ $setting_basename ] = $setting_name;
-				}
-
-				$setting_args = array(
-					'type'              => 'option',
-					'capability'        => 'manage_options',
-					'default'           => $setting->get_default(),
-					'transport'         => 'postMessage',
-					'validate_callback' => array( $this, $validate_callback ),
-					'sanitize_callback' => array( $this, $sanitize_callback ),
-				);
-
-				$control_args = array(
-					'label'    => $setting->get_title(),
-					'section'  => $setting_registry->prefix( $owner_data_section_slug ),
-					'priority' => $priority,
-				);
-
-				$setting_description = $setting->get_description();
-				if ( ! empty( $setting_description ) ) {
-					$control_args['description'] = $setting_description;
-				}
-
-				$control_args = $this->set_default_control_args_for_setting( $control_args, $setting );
-
-				$wp_customize->add_setting( $setting_name, $setting_args );
-				$wp_customize->add_control( $setting_name, $control_args );
-
-				$wp_customize->selective_refresh->add_partial( $owner_data_registry->prefix( $setting_basename ), array(
-					'settings'            => array( $setting_name ),
-					'selector'            => '.' . $owner_data->get_css_class( $setting_basename ),
-					'render_callback'     => array( $this, $partial_callback ),
-					'container_inclusive' => true,
-					'fallback_refresh'    => false,
-					'type'                => 'WPSiteIdentityPartial',
-				) );
-			}
-		}
-
-		foreach ( array( 'phone', 'email', 'website' ) as $field ) {
-			$partial_settings = array( $owner_data_registry->prefix( $owner_data_registry->get_name() ) . '[' . $field . ']' );
-			if ( 'phone' === $field ) {
-				$partial_settings[] = $owner_data_registry->prefix( $owner_data_registry->get_name() ) . '[phone_human]';
-			}
-
-			$wp_customize->selective_refresh->add_partial( $owner_data_registry->prefix( $field . '_link' ), array(
-				'settings'            => $partial_settings,
-				'selector'            => '.' . $owner_data->get_css_class( $field . '_link' ),
-				'render_callback'     => array( $this, 'partial_callback_' . $owner_data_registry->get_name() . '_setting_' . $field . '_link' ),
-				'container_inclusive' => true,
-				'fallback_refresh'    => false,
-				'type'                => 'WPSiteIdentityPartial',
-			) );
-		}
-
-		$address_single_settings = $address_fields;
-		$address_multi_settings  = $address_fields;
-
-		unset( $address_single_settings['address_format_multi'] );
-		unset( $address_multi_settings['address_format_single'] );
-
-		$address_single_settings = array_values( $address_single_settings );
-		$address_multi_settings  = array_values( $address_multi_settings );
-
-		$wp_customize->selective_refresh->add_partial( $owner_data_registry->prefix( 'address_single' ), array(
-			'settings'            => $address_single_settings,
-			'selector'            => '.' . $owner_data->get_css_class( 'address_single' ),
-			'render_callback'     => array( $this, 'partial_callback_' . $owner_data_registry->get_name() . '_setting_address_single' ),
-			'container_inclusive' => true,
-			'fallback_refresh'    => false,
-			'type'                => 'WPSiteIdentityPartial',
-		) );
-		$wp_customize->selective_refresh->add_partial( $owner_data_registry->prefix( 'address_multi' ), array(
-			'settings'            => $address_multi_settings,
-			'selector'            => '.' . $owner_data->get_css_class( 'address_multi' ),
-			'render_callback'     => array( $this, 'partial_callback_' . $owner_data_registry->get_name() . '_setting_address_multi' ),
-			'container_inclusive' => true,
-			'fallback_refresh'    => false,
-			'type'                => 'WPSiteIdentityPartial',
-		) );
+		$this->add_owner_data_content( $wp_customize, $setting_registry, $panel_slug );
+		$this->add_brand_data_content( $wp_customize, $setting_registry, $panel_slug );
 
 		/**
 		 * Fires when additional Customizer content for the plugin can be registered.
@@ -278,6 +158,205 @@ final class WP_Site_Identity_Bootstrap_Customizer {
 			case 'partial':
 				$this->print_partial( $aggregate_setting_name, $setting_name );
 				break;
+		}
+	}
+
+	/**
+	 * Adds owner data content to the Customizer.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_Customize_Manager              $wp_customize     Customize manager instance.
+	 * @param WP_Site_Identity_Setting_Registry $setting_registry Setting registry instance.
+	 * @param string                            $panel_slug       Slug of the plugin's Customizer panel.
+	 */
+	private function add_owner_data_content( $wp_customize, $setting_registry, $panel_slug ) {
+		$registry     = $setting_registry->get_setting( 'owner_data' );
+		$data         = $this->plugin->owner_data();
+		$section_slug = 'owner_data';
+
+		$wp_customize->add_section( $setting_registry->prefix( $section_slug ), array(
+			'title'      => __( 'Owner Data', 'wp-site-identity' ),
+			'capability' => 'manage_options',
+			'panel'      => $setting_registry->prefix( $panel_slug ),
+			'priority'   => 30,
+		) );
+
+		$address_fields = array(
+			'address_line_1'         => '',
+			'address_line_2'         => '',
+			'address_city'           => '',
+			'address_zip'            => '',
+			'address_state'          => '',
+			'address_state_abbrev'   => '',
+			'address_country'        => '',
+			'address_country_abbrev' => '',
+			'address_format_single'  => '',
+			'address_format_multi'   => '',
+		);
+
+		$sections = $this->bootstrap->get_owner_data_sections();
+
+		$priority = 0;
+
+		foreach ( $sections as $section ) {
+			$priority += 10;
+
+			foreach ( $section['fields'] as $field ) {
+				$setting          = $registry->get_setting( $field );
+				$setting_basename = $setting->get_name();
+
+				$setting_name = $registry->prefix( $registry->get_name() ) . '[' . $setting_basename . ']';
+
+				$validate_callback = 'validate_callback_' . $registry->get_name() . '_setting_' . $setting_basename;
+				$sanitize_callback = 'sanitize_callback_' . $registry->get_name() . '_setting_' . $setting_basename;
+				$partial_callback  = 'partial_callback_' . $registry->get_name() . '_setting_' . $setting_basename;
+
+				if ( isset( $address_fields[ $setting_basename ] ) ) {
+					$address_fields[ $setting_basename ] = $setting_name;
+				}
+
+				$setting_args = array(
+					'type'              => 'option',
+					'capability'        => 'manage_options',
+					'default'           => $setting->get_default(),
+					'transport'         => 'postMessage',
+					'validate_callback' => array( $this, $validate_callback ),
+					'sanitize_callback' => array( $this, $sanitize_callback ),
+				);
+
+				$control_args = array(
+					'label'    => $setting->get_title(),
+					'section'  => $setting_registry->prefix( $section_slug ),
+					'priority' => $priority,
+				);
+
+				$setting_description = $setting->get_description();
+				if ( ! empty( $setting_description ) ) {
+					$control_args['description'] = $setting_description;
+				}
+
+				$control_args = $this->set_default_control_args_for_setting( $control_args, $setting );
+
+				$wp_customize->add_setting( $setting_name, $setting_args );
+				$wp_customize->add_control( $setting_name, $control_args );
+
+				$wp_customize->selective_refresh->add_partial( $registry->prefix( $setting_basename ), array(
+					'settings'            => array( $setting_name ),
+					'selector'            => '.' . $data->get_css_class( $setting_basename ),
+					'render_callback'     => array( $this, $partial_callback ),
+					'container_inclusive' => true,
+					'fallback_refresh'    => false,
+					'type'                => 'WPSiteIdentityPartial',
+				) );
+			}
+		}
+
+		foreach ( array( 'phone', 'email', 'website' ) as $field ) {
+			$partial_settings = array( $registry->prefix( $registry->get_name() ) . '[' . $field . ']' );
+			if ( 'phone' === $field ) {
+				$partial_settings[] = $registry->prefix( $registry->get_name() ) . '[phone_human]';
+			}
+
+			$wp_customize->selective_refresh->add_partial( $registry->prefix( $field . '_link' ), array(
+				'settings'            => $partial_settings,
+				'selector'            => '.' . $data->get_css_class( $field . '_link' ),
+				'render_callback'     => array( $this, 'partial_callback_' . $registry->get_name() . '_setting_' . $field . '_link' ),
+				'container_inclusive' => true,
+				'fallback_refresh'    => false,
+				'type'                => 'WPSiteIdentityPartial',
+			) );
+		}
+
+		$address_single_settings = $address_fields;
+		$address_multi_settings  = $address_fields;
+
+		unset( $address_single_settings['address_format_multi'] );
+		unset( $address_multi_settings['address_format_single'] );
+
+		$address_single_settings = array_values( $address_single_settings );
+		$address_multi_settings  = array_values( $address_multi_settings );
+
+		$wp_customize->selective_refresh->add_partial( $registry->prefix( 'address_single' ), array(
+			'settings'            => $address_single_settings,
+			'selector'            => '.' . $data->get_css_class( 'address_single' ),
+			'render_callback'     => array( $this, 'partial_callback_' . $registry->get_name() . '_setting_address_single' ),
+			'container_inclusive' => true,
+			'fallback_refresh'    => false,
+			'type'                => 'WPSiteIdentityPartial',
+		) );
+		$wp_customize->selective_refresh->add_partial( $registry->prefix( 'address_multi' ), array(
+			'settings'            => $address_multi_settings,
+			'selector'            => '.' . $data->get_css_class( 'address_multi' ),
+			'render_callback'     => array( $this, 'partial_callback_' . $registry->get_name() . '_setting_address_multi' ),
+			'container_inclusive' => true,
+			'fallback_refresh'    => false,
+			'type'                => 'WPSiteIdentityPartial',
+		) );
+	}
+
+	/**
+	 * Adds brand data content to the Customizer.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_Customize_Manager              $wp_customize     Customize manager instance.
+	 * @param WP_Site_Identity_Setting_Registry $setting_registry Setting registry instance.
+	 * @param string                            $panel_slug       Slug of the plugin's Customizer panel.
+	 */
+	private function add_brand_data_content( $wp_customize, $setting_registry, $panel_slug ) {
+		$registry     = $setting_registry->get_setting( 'brand_data' );
+		$data         = $this->plugin->brand_data();
+		$section_slug = 'brand_data';
+
+		$wp_customize->add_section( $setting_registry->prefix( $section_slug ), array(
+			'title'      => __( 'Brand Data', 'wp-site-identity' ),
+			'capability' => 'manage_options',
+			'panel'      => $setting_registry->prefix( $panel_slug ),
+			'priority'   => 40,
+		) );
+
+		$sections = $this->bootstrap->get_brand_data_sections();
+
+		$priority = 0;
+
+		foreach ( $sections as $section ) {
+			$priority += 10;
+
+			foreach ( $section['fields'] as $field ) {
+				$setting          = $registry->get_setting( $field );
+				$setting_basename = $setting->get_name();
+
+				$setting_name = $registry->prefix( $registry->get_name() ) . '[' . $setting_basename . ']';
+
+				$validate_callback = 'validate_callback_' . $registry->get_name() . '_setting_' . $setting_basename;
+				$sanitize_callback = 'sanitize_callback_' . $registry->get_name() . '_setting_' . $setting_basename;
+
+				$setting_args = array(
+					'type'              => 'option',
+					'capability'        => 'manage_options',
+					'default'           => $setting->get_default(),
+					'transport'         => 'postMessage',
+					'validate_callback' => array( $this, $validate_callback ),
+					'sanitize_callback' => array( $this, $sanitize_callback ),
+				);
+
+				$control_args = array(
+					'label'    => $setting->get_title(),
+					'section'  => $setting_registry->prefix( $section_slug ),
+					'priority' => $priority,
+				);
+
+				$setting_description = $setting->get_description();
+				if ( ! empty( $setting_description ) ) {
+					$control_args['description'] = $setting_description;
+				}
+
+				$control_args = $this->set_default_control_args_for_setting( $control_args, $setting );
+
+				$wp_customize->add_setting( $setting_name, $setting_args );
+				$wp_customize->add_control( $setting_name, $control_args );
+			}
 		}
 	}
 

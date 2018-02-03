@@ -117,7 +117,30 @@ final class WP_Site_Identity_Bootstrap_Admin_Pages {
 		$brand_data_form = $factory->create_form( $setting_registry->get_setting( 'brand_data' ) );
 		$brand_data_form->set_defaults();
 
-		// TODO: Add brand data settings sections and fields.
+		$brand_data_sections = $this->bootstrap->get_brand_data_sections();
+
+		$section_factory = $brand_data_form->get_section_registry()->factory();
+		$field_registry  = $brand_data_form->get_field_registry();
+		$field_factory   = $field_registry->factory();
+
+		foreach ( $brand_data_sections as $brand_data_section ) {
+			$section_factory->create_section( $brand_data_section['slug'], array(
+				'title' => $brand_data_section['title'],
+			) )->register();
+
+			foreach ( $brand_data_section['fields'] as $brand_data_field_slug ) {
+				$field_registry->get_field( $brand_data_field_slug )->set_section_slug( $brand_data_section['slug'] );
+			}
+		}
+
+		foreach ( array( 'logo', 'icon' ) as $brand_data_field_slug ) {
+			$field_registry->get_field( $brand_data_field_slug )->set_render_callback( array( $field_factory->callbacks(), 'render_image_control' ) );
+		}
+
+		foreach ( array( 'primary_color', 'secondary_color', 'tertiary_color' ) as $brand_data_field_slug ) {
+			$field_registry->get_field( $brand_data_field_slug )->set_render_callback( array( $field_factory->callbacks(), 'render_color_control' ) );
+		}
+
 		$brand_data_form->register();
 	}
 

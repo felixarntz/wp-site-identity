@@ -216,7 +216,52 @@ final class WP_Site_Identity_Bootstrap_Settings {
 			'show_in_rest' => true,
 		) );
 
-		// TODO: Register brand data sub settings.
+		$logo_description = __( 'Upload the logo.', 'wp-site-identity' );
+
+		$custom_logo_args = get_theme_support( 'custom-logo' );
+		if ( $custom_logo_args ) {
+			/* translators: 1: image width, 2: image height */
+			$logo_description .= ' ' . sprintf( __( 'The image should have a resolution of %1$sx%2$s pixels, or at least have a similar aspect ratio.', 'wp-site-identity' ), $custom_logo_args[0]['width'], $custom_logo_args[0]['height'] );
+		}
+
+		$brand_data->factory()->create_setting( 'logo', array(
+			'title'             => __( 'Logo', 'wp-site-identity' ),
+			'description'       => $logo_description,
+			'type'              => 'integer',
+			'validate_callback' => array( $this, 'validate_image' ),
+			'show_in_rest'      => true,
+		) )->register();
+
+		$brand_data->factory()->create_setting( 'icon', array(
+			'title'             => __( 'Icon', 'wp-site-identity' ),
+			/* translators: 1: image width, 2: image height */
+			'description'       => sprintf( __( 'Upload the icon. The image should be in square format and have a resolution of at least %1$sx%2$s pixels.', 'wp-site-identity' ), 512, 512 ),
+			'type'              => 'integer',
+			'validate_callback' => array( $this, 'validate_image' ),
+			'show_in_rest'      => true,
+		) )->register();
+
+		$brand_data->factory()->create_setting( 'primary_color', array(
+			'title'             => __( 'Primary Color', 'wp-site-identity' ),
+			'type'              => 'string',
+			'validate_callback' => array( $this, 'validate_color' ),
+			'show_in_rest'      => true,
+		) )->register();
+
+		$brand_data->factory()->create_setting( 'secondary_color', array(
+			'title'             => __( 'Secondary Color', 'wp-site-identity' ),
+			'type'              => 'string',
+			'validate_callback' => array( $this, 'validate_color' ),
+			'show_in_rest'      => true,
+		) )->register();
+
+		$brand_data->factory()->create_setting( 'tertiary_color', array(
+			'title'             => __( 'Tertiary Color', 'wp-site-identity' ),
+			'type'              => 'string',
+			'validate_callback' => array( $this, 'validate_color' ),
+			'show_in_rest'      => true,
+		) )->register();
+
 		$brand_data->register();
 
 		/**
@@ -234,7 +279,7 @@ final class WP_Site_Identity_Bootstrap_Settings {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $value Address format string.
+	 * @param mixed $value Value to validate.
 	 * @return string Address format string.
 	 *
 	 * @throws WP_Site_Identity_Setting_Validation_Error_Exception Thrown when a validation error occurs.
@@ -248,6 +293,55 @@ final class WP_Site_Identity_Bootstrap_Settings {
 
 		if ( false === strpos( $value, '{' ) || false === strpos( $value, '}' ) ) {
 			throw new WP_Site_Identity_Setting_Validation_Error_Exception( __( 'The address format must contain at least one placeholder.', 'wp-site-identity' ) );
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Validates an image setting.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param mixed $value Value to validate.
+	 * @return int Attachment ID.
+	 *
+	 * @throws WP_Site_Identity_Setting_Validation_Error_Exception Thrown when a validation error occurs.
+	 */
+	public function validate_image( $value ) {
+		$value = (int) $value;
+
+		$attachment = get_post( $value );
+		if ( ! $attachment ) {
+			throw new WP_Site_Identity_Setting_Validation_Error_Exception( __( 'The specified attachment does not exist.', 'wp-site-identity' ) );
+		}
+
+		if ( 'attachment' !== $attachment->post_type || 'image/' !== substr( $attachment->post_mime_type, 0, 6 ) ) {
+			throw new WP_Site_Identity_Setting_Validation_Error_Exception( __( 'The specified attachment is not an image.', 'wp-site-identity' ) );
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Validates a color setting.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param mixed $value Value to validate.
+	 * @return string Hex color string.
+	 *
+	 * @throws WP_Site_Identity_Setting_Validation_Error_Exception Thrown when a validation error occurs.
+	 */
+	public function validate_color( $value ) {
+		$value = (string) $value;
+
+		if ( 0 !== strpos( $value, '#' ) ) {
+			$value = '#' . $value;
+		}
+
+		if ( ! preg_match( '/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/i', $value ) ) {
+			throw new WP_Site_Identity_Setting_Validation_Error_Exception( __( 'The color must be specified in hexadecimal format.', 'wp-site-identity' ) );
 		}
 
 		return $value;
