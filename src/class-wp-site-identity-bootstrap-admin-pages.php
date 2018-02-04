@@ -61,6 +61,8 @@ final class WP_Site_Identity_Bootstrap_Admin_Pages {
 			'parent_slug'      => 'options-general.php',
 		) )->register();
 
+		add_action( 'wp_site_identy_settings_page_title_action', array( $this, 'action_render_settings_page_title_action' ), 10, 1 );
+
 		/**
 		 * Fires when additional admin pages for the plugin can be registered.
 		 *
@@ -177,31 +179,21 @@ final class WP_Site_Identity_Bootstrap_Admin_Pages {
 		$settings_forms = $this->plugin->services()->get( 'settings_form_registry' )->get_all_forms();
 
 		$current_slug = $this->get_current_tab( $settings_forms );
+		$current_form = $settings_forms[ $current_slug ];
 
 		?>
 		<div class="wrap">
 			<h1 class="wp-heading-inline"><?php echo esc_html( $admin_page->get_title() ); ?></h1>
 
 			<?php
-			if ( 'owner_data' === $current_slug && current_user_can( 'customize' ) ) {
-				printf(
-					' <a class="page-title-action hide-if-no-customize" href="%1$s">%2$s</a>',
-					esc_url( add_query_arg(
-						array(
-							array(
-								'autofocus' => array(
-									'section' => $settings_forms[ $current_slug ]->get_setting_registry()->prefix( $settings_forms[ $current_slug ]->get_slug() ),
-								),
-							),
-							// @codingStandardsIgnoreStart
-							'return' => urlencode( remove_query_arg( wp_removable_query_args(), wp_unslash( $_SERVER['REQUEST_URI'] ) ) )
-							// @codingStandardsIgnoreEnd
-						),
-						admin_url( 'customize.php' )
-					) ),
-					esc_html__( 'Manage with Live Preview', 'wp-site-identity' )
-				);
-			}
+			/**
+			 * Fires when the page title action for the plugin's settings page can be printed.
+			 *
+			 * @since 1.0.0
+			 *
+			 * @param WP_Site_Identity_Settings_Form $current_form Currently active settings form.
+			 */
+			do_action( 'wp_site_identy_settings_page_title_action', $current_form );
 			?>
 
 			<hr class="wp-header-end">
@@ -217,13 +209,47 @@ final class WP_Site_Identity_Bootstrap_Admin_Pages {
 					</h2>
 				<?php else : ?>
 					<h2 class="screen-reader-text">
-						<?php echo esc_html( $settings_forms[ $current_slug ]->get_setting_registry()->get_title() ); ?>
+						<?php echo esc_html( $current_form->get_setting_registry()->get_title() ); ?>
 					</h2>
 				<?php endif; ?>
 
-				<?php $settings_forms[ $current_slug ]->render(); ?>
+				<?php $current_form->render(); ?>
 			<?php endif; ?>
 		</div>
+		<?php
+	}
+
+	/**
+	 * Prints the page title action for the plugin's settings page.
+	 *
+	 * It is a link that opens the respective section in the Customizer.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_Site_Identity_Settings_Form $current_form Currently active settings form.
+	 */
+	public function action_render_settings_page_title_action( $current_form ) {
+		if ( ! in_array( $current_form->get_slug(), array( 'owner_data', 'brand_data' ), true ) || ! current_user_can( 'customize' ) ) {
+			return;
+		}
+
+		$text = __( 'Manage with Live Preview', 'wp-site-identity' );
+		$url  = add_query_arg(
+			array(
+				array(
+					'autofocus' => array(
+						'section' => $current_form->get_setting_registry()->prefix( $current_form->get_slug() ),
+					),
+				),
+				// @codingStandardsIgnoreStart
+				'return' => urlencode( remove_query_arg( wp_removable_query_args(), wp_unslash( $_SERVER['REQUEST_URI'] ) ) )
+				// @codingStandardsIgnoreEnd
+			),
+			admin_url( 'customize.php' )
+		);
+
+		?>
+		<a class="page-title-action hide-if-no-customize" href="<?php echo esc_url( $url ); ?>"><?php echo esc_html( $text ); ?></a>
 		<?php
 	}
 
