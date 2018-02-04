@@ -212,10 +212,6 @@ final class WP_Site_Identity_Bootstrap_Customizer {
 				$sanitize_callback = 'sanitize_callback_' . $registry->get_name() . '_setting_' . $setting_basename;
 				$partial_callback  = 'partial_callback_' . $registry->get_name() . '_setting_' . $setting_basename;
 
-				if ( isset( $address_fields[ $setting_basename ] ) ) {
-					$address_fields[ $setting_basename ] = $setting_name;
-				}
-
 				$setting_args = array(
 					'type'              => 'option',
 					'capability'        => 'manage_options',
@@ -224,6 +220,8 @@ final class WP_Site_Identity_Bootstrap_Customizer {
 					'validate_callback' => array( $this, $validate_callback ),
 					'sanitize_callback' => array( $this, $sanitize_callback ),
 				);
+
+				$wp_customize->add_setting( $setting_name, $setting_args );
 
 				$control_args = array(
 					'label'    => $setting->get_title(),
@@ -238,8 +236,13 @@ final class WP_Site_Identity_Bootstrap_Customizer {
 
 				$control_args = $this->set_default_control_args_for_setting( $control_args, $setting );
 
-				$wp_customize->add_setting( $setting_name, $setting_args );
-				$wp_customize->add_control( $setting_name, $control_args );
+				if ( isset( $address_fields[ $setting_basename ] ) ) {
+					$address_fields[ $setting_basename ] = $setting_name;
+				}
+
+				$control = new WP_Customize_Control( $wp_customize, $setting_name, $control_args );
+
+				$wp_customize->add_control( $control );
 
 				$wp_customize->selective_refresh->add_partial( $registry->prefix( $setting_basename ), array(
 					'settings'            => array( $setting_name ),
@@ -316,6 +319,17 @@ final class WP_Site_Identity_Bootstrap_Customizer {
 			'priority'   => 40,
 		) );
 
+		$image_fields = array(
+			'logo' => '',
+			'icon' => '',
+		);
+
+		$color_fields = array(
+			'primary_color'   => '',
+			'secondary_color' => '',
+			'tertiary_color'  => '',
+		);
+
 		$sections = $this->bootstrap->get_brand_data_sections();
 
 		$priority = 0;
@@ -341,6 +355,8 @@ final class WP_Site_Identity_Bootstrap_Customizer {
 					'sanitize_callback' => array( $this, $sanitize_callback ),
 				);
 
+				$wp_customize->add_setting( $setting_name, $setting_args );
+
 				$control_args = array(
 					'label'    => $setting->get_title(),
 					'section'  => $setting_registry->prefix( $section_slug ),
@@ -354,8 +370,22 @@ final class WP_Site_Identity_Bootstrap_Customizer {
 
 				$control_args = $this->set_default_control_args_for_setting( $control_args, $setting );
 
-				$wp_customize->add_setting( $setting_name, $setting_args );
-				$wp_customize->add_control( $setting_name, $control_args );
+				if ( isset( $image_fields[ $setting_basename ] ) ) {
+					$image_fields[ $setting_basename ] = $setting_name;
+
+					$control_args['type']      = 'media';
+					$control_args['mime_type'] = 'image';
+					$control                   = new WP_Customize_Media_Control( $wp_customize, $setting_name, $control_args );
+				} elseif ( isset( $color_fields[ $setting_basename ] ) ) {
+					$color_fields[ $setting_basename ] = $setting_name;
+
+					$control_args['type'] = 'color';
+					$control              = new WP_Customize_Color_Control( $wp_customize, $setting_name, $control_args );
+				} else {
+					$control = new WP_Customize_Control( $wp_customize, $setting_name, $control_args );
+				}
+
+				$wp_customize->add_control( $control );
 			}
 		}
 	}
