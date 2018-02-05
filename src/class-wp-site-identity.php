@@ -153,9 +153,47 @@ final class WP_Site_Identity {
 		if ( ! isset( $this->brand_data ) ) {
 			$aggregate_setting = $this->services->get( 'setting_registry' )->get_setting( 'brand_data' );
 
-			$this->brand_data = new WP_Site_Identity_Data( 'wpsi_', $aggregate_setting );
+			$this->brand_data = new WP_Site_Identity_Brand_Data( 'wpsi_', $aggregate_setting, $this );
 		}
 		return $this->brand_data;
+	}
+
+	/**
+	 * Gets the theme support value for a given plugin feature.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $feature Plugin feature to check.
+	 * @return mixed Theme support value for $feature, or false if not supported.
+	 */
+	public function get_theme_support( $feature ) {
+		$support = get_theme_support( 'wp_site_identity' );
+		if ( ! $support ) {
+			return false;
+		}
+
+		if ( ! array_key_exists( $feature, $support[0] ) ) {
+			return false;
+		}
+
+		if ( 'css_properties' === $feature && $support[0][ $feature ] ) {
+			$css_properties = $support[0][ $feature ];
+
+			if ( ! is_array( $css_properties ) ) {
+				$css_properties = array();
+			}
+
+			$defaults = array();
+			foreach ( array( 'primary', 'secondary', 'tertiary' ) as $color_slug ) {
+				$defaults[ $color_slug ]               = $color_slug . '-color';
+				$defaults[ $color_slug . '_shade' ]    = $color_slug . '-shade-color';
+				$defaults[ $color_slug . '_contrast' ] = $color_slug . '-contrast-color';
+			}
+
+			return wp_parse_args( $css_properties, $defaults );
+		}
+
+		return $support[0][ $feature ];
 	}
 
 	/**

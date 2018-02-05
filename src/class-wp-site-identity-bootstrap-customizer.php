@@ -125,7 +125,43 @@ final class WP_Site_Identity_Bootstrap_Customizer {
 				'phone',
 				'phone_human',
 			),
+			'cssProperties'    => $this->plugin->get_theme_support( 'css_properties' ),
 		) );
+	}
+
+	/**
+	 * Action to add inline stylesheets if the theme supports them.
+	 *
+	 * If the theme supports custom CSS properties (via 'css_properties'), a custom style tag is printed
+	 * which sets these custom properties on the :root element.
+	 *
+	 * If the theme includes a CSS callback (via 'css_callback'), that callback is called and receives the ID attribute
+	 * to use and the array of $color_slug => $hex_code pairs as parameter.
+	 *
+	 * @since 1.0.0
+	 */
+	public function action_wp_head() {
+		$colors         = $this->plugin->brand_data()->get( 'colors' );
+		$css_properties = $this->plugin->get_theme_support( 'css_properties' );
+		$css_callback   = $this->plugin->get_theme_support( 'css_callback' );
+
+		if ( $css_properties ) {
+			$custom_css_properties = array_filter( array_combine( $css_properties, $colors ) );
+
+			?>
+			<style id="wpsi-custom-css-properties" type="text/css">
+				:root {
+					<?php foreach ( $custom_css_properties as $property_name => $color ) : ?>
+						--<?php echo esc_attr( $property_name ); ?>: <?php echo esc_attr( $color ); ?>;
+					<?php endforeach; ?>
+				}
+			</style>
+			<?php
+		}
+
+		if ( $css_callback ) {
+			call_user_func( $css_callback, 'wpsi-custom-css-rules', $colors );
+		}
 	}
 
 	/**
@@ -388,6 +424,14 @@ final class WP_Site_Identity_Bootstrap_Customizer {
 				$wp_customize->add_control( $control );
 			}
 		}
+
+		$wp_customize->selective_refresh->add_partial( $registry->prefix( 'colors' ), array(
+			'settings'            => array_values( $color_fields ),
+			'selector'            => '#wpsi-custom-css-rules',
+			'render_callback'     => array( $this, 'print_partial_custom_css_rules' ),
+			'container_inclusive' => false,
+			'fallback_refresh'    => false,
+		) );
 	}
 
 	/**
@@ -453,6 +497,26 @@ final class WP_Site_Identity_Bootstrap_Customizer {
 		$data = call_user_func( array( $this->plugin, $aggregate_setting_name ) );
 
 		echo $data->get_as_html( $setting_name ); // WPCS: XSS OK.
+	}
+
+	/**
+	 * Prints the CSS rules partial.
+	 *
+	 * This is a special partial since it is actually an inline stylesheet.
+	 *
+	 * @since 1.0.0
+	 */
+	public function print_partial_custom_css_rules() {
+		$colors       = $this->plugin->brand_data()->get( 'colors' );
+		$css_callback = $this->plugin->get_theme_support( 'css_callback' );
+
+		if ( $css_callback ) {
+			ob_start();
+			call_user_func( $css_callback, 'wpsi-custom-css-rules', $colors );
+			$output = ob_get_clean();
+
+			echo preg_replace( '#<style[^>]*>(.*)</style>#is', '$1', $output ); // WPCS: XSS OK.
+		}
 	}
 
 	/**

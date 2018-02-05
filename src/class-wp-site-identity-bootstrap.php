@@ -71,11 +71,11 @@ final class WP_Site_Identity_Bootstrap {
 	public function __construct( WP_Site_Identity $plugin ) {
 		$this->plugin = $plugin;
 
-		$this->bootstrap_settings    = new WP_Site_Identity_Bootstrap_Settings( $this, $this->plugin );
-		$this->bootstrap_shortcodes  = new WP_Site_Identity_Bootstrap_Shortcodes( $this, $this->plugin );
-		$this->bootstrap_widgets     = new WP_Site_Identity_Bootstrap_Widgets( $this, $this->plugin );
-		$this->bootstrap_admin_pages = new WP_Site_Identity_Bootstrap_Admin_Pages( $this, $this->plugin );
-		$this->bootstrap_customizer  = new WP_Site_Identity_Bootstrap_Customizer( $this, $this->plugin );
+		$this->bootstrap_settings      = new WP_Site_Identity_Bootstrap_Settings( $this, $this->plugin );
+		$this->bootstrap_shortcodes    = new WP_Site_Identity_Bootstrap_Shortcodes( $this, $this->plugin );
+		$this->bootstrap_widgets       = new WP_Site_Identity_Bootstrap_Widgets( $this, $this->plugin );
+		$this->bootstrap_admin_pages   = new WP_Site_Identity_Bootstrap_Admin_Pages( $this, $this->plugin );
+		$this->bootstrap_customizer    = new WP_Site_Identity_Bootstrap_Customizer( $this, $this->plugin );
 	}
 
 	/**
@@ -91,6 +91,7 @@ final class WP_Site_Identity_Bootstrap {
 		add_action( 'customize_register', array( $this->bootstrap_customizer, 'action_customize_register' ), 10, 1 );
 		add_action( 'customize_controls_enqueue_scripts', array( $this->bootstrap_customizer, 'action_customize_controls_enqueue_scripts' ), 10, 0 );
 		add_action( 'customize_preview_init', array( $this->bootstrap_customizer, 'action_customize_preview_init' ), 10, 0 );
+		add_action( 'wp_head', array( $this->bootstrap_customizer, 'action_wp_head' ), 10, 0 );
 	}
 
 	/**
@@ -106,6 +107,7 @@ final class WP_Site_Identity_Bootstrap {
 		remove_action( 'customize_register', array( $this->bootstrap_customizer, 'action_customize_register' ), 10 );
 		remove_action( 'customize_controls_enqueue_scripts', array( $this->bootstrap_customizer, 'action_customize_controls_enqueue_scripts' ), 10 );
 		remove_action( 'customize_preview_init', array( $this->bootstrap_customizer, 'action_customize_preview_init' ), 10 );
+		remove_action( 'wp_head', array( $this->bootstrap_customizer, 'action_wp_head' ), 10 );
 	}
 
 	/**
