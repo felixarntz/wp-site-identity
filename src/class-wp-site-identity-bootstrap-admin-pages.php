@@ -152,16 +152,38 @@ final class WP_Site_Identity_Bootstrap_Admin_Pages {
 	 * @since 1.0.0
 	 */
 	public function action_enqueue_settings_page() {
-		if ( 'owner_data' !== $this->get_current_tab() ) {
-			return;
-		}
+		$dependencies = array();
+		$l10n         = array();
 
 		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
-		wp_enqueue_script( 'wpsi-settings-page', $this->plugin->url( "assets/dist/js/settings-page{$min}.js" ), array(), $this->plugin->version(), true );
-		wp_localize_script( 'wpsi-settings-page', 'wpsiSettingsPage', array(
-			'typeDependencies' => $this->bootstrap->get_type_dependencies(),
-		) );
+		switch ( $this->get_current_tab() ) {
+			case 'owner_data':
+				$l10n['typeDependencies'] = $this->bootstrap->get_type_dependencies();
+				break;
+			case 'brand_data':
+				wp_enqueue_media();
+				wp_enqueue_script( 'wpsi-media-insert-frame', $this->plugin->url( "assets/dist/js/media-insert-frame{$min}.js" ), array( 'media-editor', 'underscore' ), $this->plugin->version(), true );
+
+				$dependencies[] = 'media-editor';
+				$dependencies[] = 'wpsi-media-insert-frame';
+				$dependencies[] = 'wp-color-picker';
+
+				// These strings don't have a textdomain on purpose as they come from core's `WP_Customize_Media_Control`.
+				$l10n['imageButtonLabels'] = array(
+					'select'      => __( 'Select image' ),
+					'change'      => __( 'Change image' ),
+					'default'     => __( 'Default' ),
+					'remove'      => __( 'Remove' ),
+					'placeholder' => __( 'No image selected' ),
+					'frameTitle'  => __( 'Select image' ),
+					'frameButton' => __( 'Choose image' ),
+				);
+				break;
+		}
+
+		wp_enqueue_script( 'wpsi-settings-page', $this->plugin->url( "assets/dist/js/settings-page{$min}.js" ), $dependencies, $this->plugin->version(), true );
+		wp_localize_script( 'wpsi-settings-page', 'wpsiSettingsPage', $l10n );
 	}
 
 	/**

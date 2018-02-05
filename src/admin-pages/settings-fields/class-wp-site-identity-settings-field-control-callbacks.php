@@ -68,7 +68,12 @@ final class WP_Site_Identity_Settings_Field_Control_Callbacks {
 	 * @param WP_Site_Identity_Settings_Field $field Field instance.
 	 */
 	public function render_color_control( $value, WP_Site_Identity_Settings_Field $field ) {
-		$this->render_text_control( $value, $field, 'color' );
+		$extra_attrs                     = $field->get_extra_attrs();
+		$extra_attrs['data-colorpicker'] = 'true';
+
+		$field->set_extra_attrs( $extra_attrs );
+
+		$this->render_text_control( $value, $field, 'text' );
 	}
 
 	/**
@@ -80,17 +85,22 @@ final class WP_Site_Identity_Settings_Field_Control_Callbacks {
 	 * @param WP_Site_Identity_Settings_Field $field Field instance.
 	 */
 	public function render_image_control( $value, WP_Site_Identity_Settings_Field $field ) {
+		$extra_attrs                     = $field->get_extra_attrs();
+		$extra_attrs['data-imagepicker'] = 'true';
+
+		$field->set_extra_attrs( $extra_attrs );
+
 		$image_url = '';
 		$image_alt = '';
 		if ( ! empty( $value ) ) {
 			$image_url = (string) wp_get_attachment_image_url( $value, 'medium' );
-			$image_alt = get_the_title( $value );
+			$image_alt = trim( strip_tags( get_post_meta( $value, '_wp_attachment_image_alt', true ) ) );
 		}
 		?>
 		<div class="wpsi-image-control-wrap">
 			<?php $this->render_text_control( $value, $field, 'number' ); ?>
 
-			<div class="wpsi-image-control-image">
+			<div id="<?php echo esc_attr( $field->get_id_attr() . '-preview' ); ?>" class="wpsi-image-control-image" data-input-id="<?php echo esc_attr( $field->get_id_attr() ); ?>">
 				<?php if ( ! empty( $image_url ) ) : ?>
 					<img src="<?php echo esc_url( $image_url ); ?>" alt="<?php echo esc_attr( $image_alt ); ?>" />
 				<?php endif; ?>
