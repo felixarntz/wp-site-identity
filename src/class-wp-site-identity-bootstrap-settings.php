@@ -311,6 +311,10 @@ final class WP_Site_Identity_Bootstrap_Settings {
 	public function validate_image( $value ) {
 		$value = (int) $value;
 
+		if ( empty( $value ) ) {
+			return $value;
+		}
+
 		$attachment = get_post( $value );
 		if ( ! $attachment ) {
 			throw new WP_Site_Identity_Setting_Validation_Error_Exception( __( 'The specified attachment does not exist.', 'wp-site-identity' ) );
@@ -335,6 +339,10 @@ final class WP_Site_Identity_Bootstrap_Settings {
 	 */
 	public function validate_color( $value ) {
 		$value = (string) $value;
+
+		if ( empty( $value ) ) {
+			return $value;
+		}
 
 		if ( 0 !== strpos( $value, '#' ) ) {
 			$value = '#' . $value;
