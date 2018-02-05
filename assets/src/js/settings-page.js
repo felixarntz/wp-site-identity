@@ -118,6 +118,11 @@
 		var selectButton = document.createElement( 'button' );
 		var deleteButton = document.createElement( 'button' );
 		var value        = parseInt( field.value, 10 );
+		var attachment   = document.getElementById( field.id + '-attachment-data' );
+
+		if ( attachment ) {
+			field.attachment = JSON.parse( attachment.textContent );
+		}
 
 		field.type = 'hidden';
 

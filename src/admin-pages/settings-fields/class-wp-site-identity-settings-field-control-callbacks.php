@@ -105,6 +105,12 @@ final class WP_Site_Identity_Settings_Field_Control_Callbacks {
 					<img src="<?php echo esc_url( $image_url ); ?>" alt="<?php echo esc_attr( $image_alt ); ?>" />
 				<?php endif; ?>
 			</div>
+
+			<?php if ( ! empty( $value ) ) : ?>
+				<script type="application/json" id="<?php echo esc_attr( $field->get_id_attr() . '-attachment-data' ); ?>">
+					<?php echo wp_json_encode( wp_prepare_attachment_for_js( $value ) ); ?>
+				</script>
+			<?php endif; ?>
 		</div>
 		<?php
 	}
