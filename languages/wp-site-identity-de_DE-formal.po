@@ -1,0 +1,476 @@
+# Copyright (C) 2018 wp-site-identity
+# This file is distributed under the same license as the wp-site-identity package.
+msgid ""
+msgstr ""
+"Project-Id-Version: wp-site-identity\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: WP Site Identity 1.0.0\n"
+"X-Poedit-KeywordsList: __;_e;_ex:1,2c;_n:1,2;_n_noop:1,2;_nx:1,2,4c;"
+"_nx_noop:1,2,3c;_x:1,2c;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;"
+"esc_html_e;esc_html_x:1,2c\n"
+"report-msgid-bugs-to: https://translate.wordpress.org/projects/wp-plugins/"
+"wp-site-identity\n"
+"x-generator: gulp-wp-pot\n"
+"x-poedit-basepath: .\n"
+"x-poedit-bookmars: \n"
+"x-poedit-country: UNITED STATES\n"
+"x-poedit-keywordslist: __;_e;_x:1,2c;_ex:1,2c;_n:1,2; _nx:1,2,4c;"
+"_n_noop:1,2;_nx_noop:1,2,3c;esc_attr__; esc_html__;esc_attr_e; esc_html_e;"
+"esc_attr_x:1,2c; esc_html_x:1,2c;\n"
+"x-poedit-language: English\n"
+"x-poedit-searchpath-0: .\n"
+"x-poedit-sourcecharset: uft-8\n"
+"x-textdomain-support: yes\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Language-Team: \n"
+"X-Generator: Poedit 1.8.12\n"
+"Last-Translator: \n"
+"Language: de_DE@formal\n"
+
+#. translators: %s: URL to deactivate plugin
+#: wp-site-identity.php:155
+msgid ""
+"Please note: WP Site Identity requires WordPress 4.7 or higher. <a href=\"%s"
+"\">Deactivate plugin</a>."
+msgstr ""
+"Bitte beachten Sie: WP Site Identity erfordert WordPress 4.7 oder höher. <a "
+"href=\"%s\">Plugin deaktivieren</a>."
+
+#: src/class-wp-site-identity-bootstrap-admin-pages.php:55
+msgid "Site Identity Settings"
+msgstr "Website-Identitätseinstellungen"
+
+#: src/class-wp-site-identity-bootstrap-admin-pages.php:60,
+#: src/class-wp-site-identity-bootstrap-customizer.php:57
+msgid "Site Identity"
+msgstr "Website-Identität"
+
+#: src/class-wp-site-identity-bootstrap-admin-pages.php:258
+msgid "Manage with Live Preview"
+msgstr "Mit Live-Vorschau verwalten"
+
+#: src/class-wp-site-identity-bootstrap-customizer.php:64
+msgid "Title and Logo"
+msgstr "Titel und Logo"
+
+#: src/class-wp-site-identity-bootstrap-customizer.php:66
+msgid "Title and Tagline"
+msgstr "Titel und Untertitel"
+
+#: src/class-wp-site-identity-bootstrap-customizer.php:215,
+#: src/class-wp-site-identity-bootstrap-settings.php:57
+msgid "Owner Data"
+msgstr "Eigentümerdaten"
+
+#: src/class-wp-site-identity-bootstrap-customizer.php:352
+msgid "Brand Data"
+msgstr "Markendaten"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:58
+msgid "Data about the owner of the website."
+msgstr "Daten über den Eigentümer der Website."
+
+#: src/class-wp-site-identity-bootstrap-settings.php:63
+msgid "Type"
+msgstr "Typ"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:64
+msgid "Select the type of entity that is the owner of the site."
+msgstr ""
+"Wählen Sie den Typ Entität aus, welcher auf den Eigentümer der Website "
+"zutrifft."
+
+#: src/class-wp-site-identity-bootstrap-settings.php:72
+msgid "First Name"
+msgstr "Vorname"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:73
+msgid "The owner&#8217;s first name."
+msgstr "Der Vorname des Eigentümers."
+
+#: src/class-wp-site-identity-bootstrap-settings.php:79
+msgid "Last Name"
+msgstr "Nachname"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:80
+msgid "The owner&#8217;s last name."
+msgstr "Der Nachname des Eigentümers"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:86
+msgid "Organization Name"
+msgstr "Organisationsname"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:87
+msgid "The organization&#8217;s name."
+msgstr "Der Name der Organisation."
+
+#: src/class-wp-site-identity-bootstrap-settings.php:93
+msgid "Organization Legal Name"
+msgstr "Offizieller Organisationsname"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:94
+msgid "The organization&#8217;s full legal name as registered."
+msgstr ""
+"Der vollständige rechtlich offiziell registrierte Name der Organisation."
+
+#: src/class-wp-site-identity-bootstrap-settings.php:100
+msgid "Address Line 1"
+msgstr "Adresszeile 1"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:106
+msgid "Address Line 2 (optional)"
+msgstr "Adresszeile 2 (optional)"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:112
+msgid "City"
+msgstr "Ort"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:118
+msgid "Zip / Postal Code"
+msgstr "Postleitzahl"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:124
+msgid "State"
+msgstr "Bundesstaat"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:130
+msgid "State (Abbrev.)"
+msgstr "Bundesstaat (Abkürzung)"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:136
+msgid "Country"
+msgstr "Land"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:142
+msgid "Country (Abbrev.)"
+msgstr "Land (Abkürzung)"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:158
+msgctxt "single line address template"
+msgid "{line_1} {line_2}, {city}, {state_abbrev} {zip}"
+msgstr "{line_1} {line_2}, {zip} {city}"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:159
+msgctxt "multiple lines address template"
+msgid "{line_1}<br />{line_2}<br />{city}, {state_abbrev} {zip}"
+msgstr "{line_1}<br />{line_2}<br />{zip} {city}"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:162
+msgid "Address Format (Single Line)"
+msgstr "Adressformat (einzeilig)"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:172
+msgid "Address Format (Multiple Lines)"
+msgstr "Adressformat (mehrzeilig)"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:182
+msgid "Email Address"
+msgstr "Email-Adresse"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:190
+msgid "Website URL"
+msgstr "Website-URL"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:198
+msgid "Phone Number (Machine Readable)"
+msgstr "Telefonnummer (maschinenlesbar)"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:199
+msgid ""
+"The contact phone number, in machine readable format (for example <code>"
+"+1555123456</code>)."
+msgstr ""
+"Die Kontakt-Telefonnummer, im maschinenlesbaren Format (zum Beispiel <code>"
+"+49555123456</code>)."
+
+#: src/class-wp-site-identity-bootstrap-settings.php:205
+msgid "Phone Number (Human Readable)"
+msgstr "Telefonnummer (formatiert)"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:206
+msgid ""
+"The contact phone number, in human readable format (for example <code>(555) "
+"123 456</code>)."
+msgstr ""
+"Die Kontakt-Telefonnummer, in formatiertem Format (zum Beispiel <code>(555) "
+"123 456</code>)."
+
+#: src/class-wp-site-identity-bootstrap-settings.php:214
+msgid "Brand"
+msgstr "Marke"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:215
+msgid "Appearance information representing the brand_data."
+msgstr "Designinformationen zur Repräsentation der Markendaten."
+
+#: src/class-wp-site-identity-bootstrap-settings.php:219
+msgid "Upload the logo."
+msgstr "Laden Sie das Logo hoch."
+
+#. translators: 1: image width, 2: image height
+#: src/class-wp-site-identity-bootstrap-settings.php:224
+msgid ""
+"The image should have a resolution of %1$sx%2$s pixels, or at least have a "
+"similar aspect ratio."
+msgstr ""
+"Das Bild sollte eine Auflösung von %1$sx%2$s Pixeln haben oder zumindest "
+"ein vergleichbares Seitenverhältnis aufweisen."
+
+#: src/class-wp-site-identity-bootstrap-settings.php:228
+msgid "Logo"
+msgstr "Logo"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:236
+msgid "Icon"
+msgstr "Icon"
+
+#. translators: 1: image width, 2: image height
+#: src/class-wp-site-identity-bootstrap-settings.php:238
+msgid ""
+"Upload the icon. The image should be in square format and have a resolution "
+"of at least %1$sx%2$s pixels."
+msgstr ""
+"Laden Sie das Icon hoch. Das Bild sollte quadratisch sein und eine "
+"Auflösung von mindestens %1$sx%2$s Pixeln haben."
+
+#: src/class-wp-site-identity-bootstrap-settings.php:245
+msgid "Primary Color"
+msgstr "Primärfarbe"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:252
+msgid "Secondary Color"
+msgstr "Sekundärfarbe"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:259
+msgid "Tertiary Color"
+msgstr "Tertiärfarbe"
+
+#: src/class-wp-site-identity-bootstrap-settings.php:291
+msgid "The address format must not be empty."
+msgstr "Das Adressformat darf nicht leer sein."
+
+#: src/class-wp-site-identity-bootstrap-settings.php:295
+msgid "The address format must contain at least one placeholder."
+msgstr "Das Adressformat muss mindestens einen Platzhalter enthalten."
+
+#: src/class-wp-site-identity-bootstrap-settings.php:320
+msgid "The specified attachment does not exist."
+msgstr "Die angegebene Mediendatei existiert nicht."
+
+#: src/class-wp-site-identity-bootstrap-settings.php:324
+msgid "The specified attachment is not an image."
+msgstr "Die angegebene Mediendatei ist kein Bild."
+
+#: src/class-wp-site-identity-bootstrap-settings.php:352
+msgid "The color must be specified in hexadecimal format."
+msgstr "Die Farbe muss im Hexadezimalformat angegeben werden."
+
+#: src/class-wp-site-identity-bootstrap-shortcodes.php:62
+msgid "Site Identity:"
+msgstr "Website-Identität:"
+
+#: src/class-wp-site-identity-bootstrap-shortcodes.php:67
+msgctxt "shortcode UI title"
+msgid "Field"
+msgstr "Feld"
+
+#: src/class-wp-site-identity-bootstrap-shortcodes.php:68
+msgctxt "shortcode UI description"
+msgid "Select the field for which to display the value."
+msgstr "Wählen Sie das Feld aus, dessen Wert angezeigt werden soll."
+
+#: src/class-wp-site-identity-bootstrap-shortcodes.php:72
+msgctxt "dropdown placeholder"
+msgid "Please Select..."
+msgstr "Bitte wählen…"
+
+#: src/class-wp-site-identity-bootstrap-shortcodes.php:89
+msgid "Address (Single Line)"
+msgstr "Adresse (einzeilig)"
+
+#: src/class-wp-site-identity-bootstrap-shortcodes.php:93
+msgid "Address (Multiple Lines)"
+msgstr "Adresse (mehrzeilig)"
+
+#: src/class-wp-site-identity-bootstrap-shortcodes.php:96
+msgctxt "shortcode label"
+msgid "Phone Number Link"
+msgstr "Telefonnummer-Link"
+
+#. translators: %s: setting title
+#: src/class-wp-site-identity-bootstrap-shortcodes.php:101
+msgctxt "shortcode label"
+msgid "%s Link"
+msgstr "%s-Link"
+
+#: src/class-wp-site-identity-bootstrap-widgets.php:54
+msgid "Site Identity Data"
+msgstr "Website-Identitätsdaten"
+
+#: src/class-wp-site-identity-bootstrap-widgets.php:54
+msgid "Your site identity owner data."
+msgstr "Ihre Website-Identitäts-Eigentümerdaten."
+
+#: src/class-wp-site-identity-bootstrap-widgets.php:56
+msgid "Title"
+msgstr "Titel"
+
+#: src/class-wp-site-identity-bootstrap-widgets.php:60
+msgid "Show name?"
+msgstr "Name anzeigen?"
+
+#: src/class-wp-site-identity-bootstrap-widgets.php:65
+msgid "Show address?"
+msgstr "Adresse anzeigen?"
+
+#: src/class-wp-site-identity-bootstrap-widgets.php:70
+msgid "Show contact information?"
+msgstr "Kontaktinformationen anzeigen?"
+
+#: src/class-wp-site-identity-bootstrap-widgets.php:122
+msgid "Phone:"
+msgstr "Telefon:"
+
+#: src/class-wp-site-identity-bootstrap-widgets.php:127
+msgid "Email:"
+msgstr "Email:"
+
+#: src/class-wp-site-identity-bootstrap-widgets.php:132
+msgid "Website:"
+msgstr "Website:"
+
+#: src/class-wp-site-identity-bootstrap.php:125
+msgid "Basic Information"
+msgstr "Basisinformationen"
+
+#: src/class-wp-site-identity-bootstrap.php:136
+msgid "Address"
+msgstr "Adresse"
+
+#: src/class-wp-site-identity-bootstrap.php:152
+msgid "Contact Data"
+msgstr "Kontaktdaten"
+
+#: src/class-wp-site-identity-bootstrap.php:185
+msgid "Media"
+msgstr "Medien"
+
+#: src/class-wp-site-identity-bootstrap.php:193
+msgid "Colors"
+msgstr "Farben"
+
+#: src/class-wp-site-identity-bootstrap.php:222
+msgid "Individual"
+msgstr "Individuum"
+
+#: src/class-wp-site-identity-bootstrap.php:223
+msgid "Organization"
+msgstr "Organisation"
+
+#. translators: %s: service identifier
+#: src/class-wp-site-identity-service-container.php:46
+msgid "The service with the identifier %s could not be found."
+msgstr "Der Service mit dem Bezeichner %s konnte nicht gefunden werden."
+
+#. translators: %s: service identifier
+#: src/class-wp-site-identity-service-container.php:97
+msgid "The service with the identifier %s is already registered."
+msgstr "Der Service mit dem Bezeichner %s ist bereits registriert."
+
+#. translators: %s: admin page slug
+#: src/admin-pages/class-wp-site-identity-standard-admin-page-registry.php:87
+msgid "The admin page with the slug %s could not be found."
+msgstr "Die Admin-Seite mit dem Bezeichner %s konnte nicht gefunden werden."
+
+#. translators: %s: setting name
+#. translators: %s: setting name
+#. translators: %s: setting name
+#. translators: %s: setting name
+#: src/settings/class-wp-site-identity-aggregate-setting.php:98,
+#: src/settings/class-wp-site-identity-aggregate-setting.php:134,
+#: src/settings/class-wp-site-identity-standard-setting-registry.php:125,
+#: src/settings/class-wp-site-identity-standard-setting-registry.php:155
+msgid "The setting with the name %s could not be found."
+msgstr "Die Einstellung mit dem Bezeichner %s konnte nicht gefunden werden."
+
+#. translators: 1: value, 2: type name
+#. translators: 1: value, 2: type name
+#. translators: 1: value, 2: type name
+#. translators: 1: value, 2: type name
+#. translators: 1: value, 2: type name
+#. translators: 1: value, 2: type name
+#: src/settings/class-wp-site-identity-aggregate-setting.php:278,
+#: src/settings/class-wp-site-identity-setting-validator.php:108,
+#: src/settings/class-wp-site-identity-setting-validator.php:138,
+#: src/settings/class-wp-site-identity-setting-validator.php:165,
+#: src/settings/class-wp-site-identity-setting-validator.php:185,
+#: src/settings/class-wp-site-identity-setting-validator.php:190
+msgid "%1$s is not of type %2$s."
+msgstr "%1$s hat nicht den Typ %2$s."
+
+#: src/settings/class-wp-site-identity-aggregate-setting.php:310
+msgid "All remaining settings were successfully saved."
+msgstr "Alle weiteren Einstellungen wurden erfolgreich gespeichert."
+
+#. translators: 1: value, 2: minimum number
+#: src/settings/class-wp-site-identity-setting-validator.php:195
+msgid "%1$s must be greater than or equal to %2$s."
+msgstr "%1$s muss größer oder gleich %2$s sein."
+
+#. translators: 1: value, 2: maximum number
+#: src/settings/class-wp-site-identity-setting-validator.php:200
+msgid "%1$s must be less than or equal to %2$s."
+msgstr "%1$s muss kleiner oder gleich %2$s sein."
+
+#. translators: 1: value, 2: list of valid values
+#: src/settings/class-wp-site-identity-setting-validator.php:222
+msgid "%1$s is not one of %2$s."
+msgstr "%1$s ist kein Wert aus %2$s."
+
+#. translators: %s: value
+#: src/settings/class-wp-site-identity-setting-validator.php:230
+msgid "%s is not a valid date."
+msgstr "%s ist kein gültiges Datum."
+
+#. translators: %s: value
+#: src/settings/class-wp-site-identity-setting-validator.php:236
+msgid "%s is not a valid email address."
+msgstr "%s ist keine gültige Email-Adresse."
+
+#. translators: %s: value
+#: src/settings/class-wp-site-identity-setting-validator.php:242
+msgid "%s is not a valid IP address."
+msgstr "%s ist keine gültige IP-Adresse."
+
+#. translators: %s: shortcode tag
+#: src/shortcodes/class-wp-site-identity-standard-shortcode-registry.php:79
+msgid "The shortcode with the tag %s could not be found."
+msgstr "Der Shortcode mit dem Tag %s konnte nicht gefunden werden."
+
+#. translators: %s: widget ID base
+#: src/widgets/class-wp-site-identity-standard-widget-registry.php:79
+msgid "The widget with the ID base %s could not be found."
+msgstr "Das Widget mit der ID-Basis %s konnte nicht gefunden werden."
+
+#. translators: %s: settings field slug
+#: src/admin-pages/settings-fields/class-wp-site-identity-standard-settings-field-registry.php:76
+msgid "The settings field with the slug %s could not be found."
+msgstr ""
+"Das Einstellungsfeld mit dem Bezeichner %s konnte nicht gefunden werden."
+
+#. translators: %s: settings form slug
+#: src/admin-pages/settings-forms/class-wp-site-identity-standard-settings-form-registry.php:65
+msgid "The settings form with the slug %s could not be found."
+msgstr ""
+"Das Einstellungsformular mit dem Bezeichner %s konnte nicht gefunden werden."
+
+#. translators: %s: settings section slug
+#: src/admin-pages/settings-sections/class-wp-site-identity-standard-settings-section-registry.php:76
+msgid "The settings section with the slug %s could not be found."
+msgstr ""
+"Der Einstellungsabschnitt mit dem Bezeichner %s konnte nicht gefunden "
+"werden."
