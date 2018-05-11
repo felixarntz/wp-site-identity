@@ -10,8 +10,8 @@ Requires at least: 4.7
 Tested up to:      4.9
 Stable tag:        1.0.0
 Version:           1.0.0
-License:           GNU General Public License v3
-License URI:       http://www.gnu.org/licenses/gpl-3.0.html
+License:           GNU General Public License v2 or later
+License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 Tags:              site identity, personal data, business data, brand, appearance, centralized, customization, customizer, widgets, shortcodes
 
 Enables you to manage your site identity data and brand in one centralized location.

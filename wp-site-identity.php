@@ -12,8 +12,8 @@
  * Version:     1.0.0
  * Author:      Felix Arntz
  * Author URI:  https://leaves-and-love.net
- * License:     GNU General Public License v3
- * License URI: http://www.gnu.org/licenses/gpl-3.0.html
+ * License:     GNU General Public License v2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: wp-site-identity
  * Tags:        site identity, personal data, business data, brand, appearance, centralized, customization, customizer, widgets, shortcodes
  */
