@@ -115,19 +115,25 @@ final class WP_Site_Identity_Bootstrap_Widgets {
 		}
 
 		if ( $instance['show_contact'] ) {
+			$contact_data = array();
+
 			$phone = $owner_data->get( 'phone' );
 			if ( ! empty( $phone ) ) {
-				$output .= '<p>' . esc_html__( 'Phone:', 'wp-site-identity' ) . ' ' . $owner_data->get_as_html( 'phone_link' ) . '</p>';
+				$contact_data[] = esc_html__( 'Phone:', 'wp-site-identity' ) . ' ' . $owner_data->get_as_html( 'phone_link' );
 			}
 
 			$email = $owner_data->get( 'email' );
 			if ( ! empty( $email ) ) {
-				$output .= '<p>' . esc_html__( 'Email:', 'wp-site-identity' ) . ' ' . $owner_data->get_as_html( 'email_link' ) . '</p>';
+				$contact_data[] = esc_html__( 'Email:', 'wp-site-identity' ) . ' ' . $owner_data->get_as_html( 'email_link' );
 			}
 
 			$website = $owner_data->get( 'website' );
 			if ( ! empty( $website ) ) {
-				$output .= '<p>' . esc_html__( 'Website:', 'wp-site-identity' ) . ' ' . $owner_data->get_as_html( 'website_link' ) . '</p>';
+				$contact_data[] = esc_html__( 'Website:', 'wp-site-identity' ) . ' ' . $owner_data->get_as_html( 'website_link' );
+			}
+
+			if ( ! empty( $contact_data ) ) {
+				$output .= '<p>' . implode( '<br>', $contact_data ) . '</p>';
 			}
 		}
 
