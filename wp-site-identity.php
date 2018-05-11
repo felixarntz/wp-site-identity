@@ -163,6 +163,16 @@ function wpsi_requirements_notice() {
 	<?php
 }
 
+/**
+ * Loads the plugin textdomain.
+ *
+ * @since 1.0.0
+ */
+function wpsi_load_textdomain() {
+	load_plugin_textdomain( 'wp-site-identity', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+}
+add_action( 'plugins_loaded', 'wpsi_load_textdomain', 1 );
+
 if ( version_compare( $GLOBALS['wp_version'], '4.7', '<' ) ) {
 	add_action( 'admin_notices', 'wpsi_requirements_notice' );
 } else {

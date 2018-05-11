@@ -30,6 +30,8 @@ var config = {
 	version: pkg.version,
 	license: 'GNU General Public License v3',
 	licenseURI: 'http://www.gnu.org/licenses/gpl-3.0.html',
+	textDomain: pkg.name,
+	domainPath: '/languages/',
 	tags: keywords.join( ', ' ),
 	contributors: [ 'flixos90' ].join( ', ' ),
 	donateLink: 'https://leaves-and-love.net/wordpress-plugins/',
@@ -50,7 +52,7 @@ var pluginheader = 	' * Plugin Name: ' + config.pluginName + '\n' +
 					' * Author URI:  ' + config.authorURI + '\n' +
 					' * License:     ' + config.license + '\n' +
 					' * License URI: ' + config.licenseURI + '\n' +
-					' * Text Domain: ' + config.pluginSlug + '\n' +
+					' * Text Domain: ' + config.textDomain + '\n' +
 					( config.network ? ' * Network:     true' + '\n' : '' ) +
 					' * Tags:        ' + config.tags;
 
@@ -91,6 +93,8 @@ var jshint = require( 'gulp-jshint' );
 var jscs = require( 'gulp-jscs' );
 var concat = require( 'gulp-concat' );
 var uglify = require( 'gulp-uglify' );
+var sort = require( 'gulp-sort' );
+var wpPot = require( 'gulp-wp-pot' );
 
 var paths = {
 	php: {
@@ -163,6 +167,33 @@ gulp.task( 'js', function( done ) {
 			extname: '.min.js'
 		}) )
 		.pipe( gulp.dest( paths.js.dst ) )
+		.on( 'end', done );
+});
+
+// generate POT file
+gulp.task( 'pot', function( done ) {
+	gulp.src([
+		'./*.php',
+		'./src/**/*.php'
+	])
+		.pipe( sort() )
+		.pipe( wpPot({
+			domain: config.textDomain,
+			headers: {
+				'Project-Id-Version': config.pluginName + ' ' + config.version,
+				'report-msgid-bugs-to': config.translateURI,
+				'x-generator': 'gulp-wp-pot',
+				'x-poedit-basepath': '.',
+				'x-poedit-language': 'English',
+				'x-poedit-country': 'UNITED STATES',
+				'x-poedit-sourcecharset': 'uft-8',
+				'x-poedit-keywordslist': '__;_e;_x:1,2c;_ex:1,2c;_n:1,2; _nx:1,2,4c;_n_noop:1,2;_nx_noop:1,2,3c;esc_attr__; esc_html__;esc_attr_e; esc_html_e;esc_attr_x:1,2c; esc_html_x:1,2c;',
+				'x-poedit-bookmars': '',
+				'x-poedit-searchpath-0': '.',
+				'x-textdomain-support': 'yes'
+			},
+		}) )
+		.pipe( gulp.dest( './languages/' + config.textDomain + '.pot' ) )
 		.on( 'end', done );
 });
 
